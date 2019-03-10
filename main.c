@@ -95,6 +95,12 @@ void setup()
 // sets usart device
 void serialSetup()
 {
+    // these settings are pretty much lifted from the exsample github repo
+    TXSTA = 0x24;  // TX enable BRGH=1, so high speed baoud rate is on, register is on page 258
+    RCSTA = 0x90; // RX enable, single RX
+    // setup the baoud rate.  For testing this will be around 9600;
+    // calculating the baoud rate is given on page 261 of the datasheet
+    // see SPBRGH:SPBRG registers, also line 291 of the example
     
 }
 
