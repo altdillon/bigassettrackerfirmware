@@ -58,7 +58,7 @@ typedef char LTE_Shield_registration_status_t;
 #define LTE_SHIELD_REGISTRATION_ROAMING_CSFB_NOT_PREFERRED 9
 
 // LTE sheild codes 
-typedef char LTE_Shield_error_t;
+//typedef char LTE_Shield_error_t;
 #define LTE_SHIELD_STANDARD_RESPONSE_TIMEOUT 1000
 #define LTE_SHIELD_SET_BAUD_TIMEOUT 500
 #define LTE_SHIELD_POWER_PULSE_PERIOD 3200
@@ -140,6 +140,7 @@ bool begin(unsigned short baud_rate);
 // loop polling and polling setup
 bool poll();
 LTE_Shield_error_t at(); 
+LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * expectedResponse, char * responseDest, unsigned long commandTimeout, bool at);
 
 
 #endif	/* SPARKFUN_LTE_H */
