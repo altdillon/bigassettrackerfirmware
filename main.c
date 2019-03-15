@@ -56,14 +56,25 @@ void i2cSetup();
 void putc(char ch);
 char getc();
 char getstr(char *buffer,char length);
-char sendstr(char *str);
+void sendstr(char *str);
 
 void main(void) 
 {
     setup();
+    bool sent=false;
     
     while(true)
     {
+        if(PORTAbits.RA0 == true && sent == false)
+        {
+            char *msg = "Hello Serial!";
+            sendstr(msg);
+            sent = true;
+        }
+        else if(PORTAbits.RA0 == false)
+        {
+            sent = false;
+        }
         
         asm("clrwdt"); // clear the watch dog timer
     }
@@ -96,11 +107,22 @@ void setup()
 void serialSetup()
 {
     // these settings are pretty much lifted from the exsample github repo
-    TXSTA = 0x24;  // TX enable BRGH=1, so high speed baoud rate is on, register is on page 258
+    //TXSTA = 0x24;  // TX enable BRGH=1, so high speed baoud rate is on, register is on page 258
+    TXSTAbits.TXEN = true;
+    TXSTAbits.BRGH = false;
+    TXSTAbits.SYNC = true;
+    
+    
     RCSTA = 0x90; // RX enable, single RX
     // setup the baoud rate.  For testing this will be around 9600;
     // calculating the baoud rate is given on page 261 of the datasheet
     // see SPBRGH:SPBRG registers, also line 291 of the example
+    SPBRG = 0x4D;
+    SPBRGH = 0x00;
+    // configure baoudcon
+    BAUDCONbits.SCKP = true; // data clocked on rising edge
+    BAUDCONbits.BRG16 = false; // using 8bit counter for baoud generation
+    
     
 }
 
@@ -115,7 +137,7 @@ void serialSetup()
 
 void putc(char ch)
 {
-    // stub
+    TXREG = ch;
 }
 
 char getc()
@@ -131,7 +153,10 @@ char getstr(char *buffer,char length)
 }
 
 // sends a string, returns -1 if there's been an error
-char sendstr(char *str)
+void sendstr(char *str)
 {
-    return -1; // stub
+    for(char *itr=str;*itr != '\0';itr++)
+    {
+        putc(*itr);
+    }
 }
