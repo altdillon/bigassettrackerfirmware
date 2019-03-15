@@ -82,12 +82,12 @@ void main(void)
 
 void setup()
 {
-    OSCCON=0b01101100; // configure the internal clock
-    OPTION_REG=0b10001111;
-    INTCON=0b10100000; //we may not need this
-    // for the time being make port A an input and port c and output 
+    // configure the internal clock.  100 Khz
+    OSCCON = 0b00100000;
+    // configure the IO
+    TRISA = 0xff;
     TRISC = 0x00;
-    TRISA = 0xFF;
+    
     
     serialSetup(); // call the function for setting up the serial devices 
 }
