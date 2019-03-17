@@ -62,14 +62,20 @@ void main(void)
 {
     setup();
     bool sent=false;
+    unsigned char callcount = 0x00;
     
     while(true)
     {
+        
+        asm("nop");
         if(PORTAbits.RA0 == true && sent == false)
         {
-            char *msg = "Hello Serial!";
+            char *ncount = atoi(callcount);
+            char *msg = "Hello Serial!\t";
             sendstr(msg);
+            //sendstr(ncount);
             sent = true;
+            callcount++;
         }
         else if(PORTAbits.RA0 == false)
         {
