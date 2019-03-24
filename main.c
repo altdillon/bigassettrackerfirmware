@@ -60,27 +60,28 @@ void sendstr(char *str);
 
 void main(void) 
 {
+    asm("nop");
     setup();
-    bool sent=false;
-    unsigned char callcount = 0x00;
-    
+   
     while(true)
     {
         
         asm("nop");
-        if(PORTAbits.RA0 == true && sent == false)
+        if(PORTAbits.RA0 == true)
         {
-            char *ncount = atoi(callcount);
+            //char *ncount = atoi(callcount);
             char *msg = "Hello Serial!\t";
             sendstr(msg);
             //sendstr(ncount);
-            sent = true;
-            callcount++;
+   
+            PORTCbits.RC0 = true;
         }
-        else if(PORTAbits.RA0 == false)
+        else
         {
-            sent = false;
+            PORTCbits.RC0 = false;
         }
+        
+        for(char i=0;i<0xFF;i++);
         
         asm("clrwdt"); // clear the watch dog timer
     }
@@ -102,34 +103,56 @@ void setup()
     // configure the internal clock.  100 Khz
     OSCCON = 0b00100000;
     // configure the IO
-    TRISA = 0xff;
-    TRISC = 0x00;
-    
-    
+    TRISA = 0xff; // input 
+    //TRISC = 0x00; // output, right now it's turned off to test the serial stuff
+    TRISCbits.TRISC0 = 0; // set the first bit of portc to output
     serialSetup(); // call the function for setting up the serial devices 
 }
 
 // sets usart device
+//void serialSetup() // old function, dosn't work :(
+//{
+//    // these settings are pretty much lifted from the exsample github repo
+//    //TXSTA = 0x24;  // TX enable BRGH=1, so high speed baoud rate is on, register is on page 258
+//    TXSTAbits.TXEN = true;
+//    TXSTAbits.BRGH = false;
+//    TXSTAbits.SYNC = true;
+//    
+//    
+//    RCSTA = 0x90; // RX enable, single character RX
+//    // setup the baoud rate.  For testing this will be around 9600;
+//    // calculating the baoud rate is given on page 261 of the datasheet
+//    // see SPBRGH:SPBRG registers, also line 291 of the example
+//    SPBRG = 0x4D;
+//    SPBRGH = 0x00;
+//    // configure baoudcon
+//    BAUDCONbits.SCKP = true; // data clocked on rising edge
+//    BAUDCONbits.BRG16 = false; // using 8bit counter for baoud generation
+//    
+//    
+//}
+
+// new function for configuring the serial device 
 void serialSetup()
 {
-    // these settings are pretty much lifted from the exsample github repo
-    //TXSTA = 0x24;  // TX enable BRGH=1, so high speed baoud rate is on, register is on page 258
-    TXSTAbits.TXEN = true;
-    TXSTAbits.BRGH = false;
-    TXSTAbits.SYNC = true;
+    // configure the IO ports for the serial ports
+    TRISCbits.TRISC4 = true; // configure RC4 as input since its RX
+    TRISCbits.TRISC5 = false; // configure RC5 as an output since it's TX
+    for(char i=0;i<0xFF;i++); // delay for good measure 
     
+    // TXSTA register is outlined on page 258 of the datasheet
+    TXSTAbits.TXEN = true; // enable transmitting
+    TXSTAbits.SYNC = false; // use async mode
+    TXSTAbits.SENDB = false; // send break character as soon as the transmission is completed
+    TXSTAbits.TX9 = false; // select 8 bit word size.  As aposed to 9bit
     
-    RCSTA = 0x90; // RX enable, single RX
-    // setup the baoud rate.  For testing this will be around 9600;
-    // calculating the baoud rate is given on page 261 of the datasheet
-    // see SPBRGH:SPBRG registers, also line 291 of the example
-    SPBRG = 0x4D;
-    SPBRGH = 0x00;
-    // configure baoudcon
-    BAUDCONbits.SCKP = true; // data clocked on rising edge
-    BAUDCONbits.BRG16 = false; // using 8bit counter for baoud generation
+    // RCSTA register is outlined on page 259 of the datasheet
+    RCSTAbits.SREN = true; // enable the serial port
+    RCSTAbits.RX9 = false; // accept 8bit values
+    RCSTAbits.CREN = true; // enable continous recive.
     
-    
+    // configure the baud generator
+    // baoudcon register is on 290
 }
 
 /*
@@ -143,6 +166,7 @@ void serialSetup()
 
 void putc(char ch)
 {
+    //while(!TXIF); // wait until the TXREG is ready for new information
     TXREG = ch;
 }
 
