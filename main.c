@@ -17,7 +17,7 @@
 
 // CONFIG1
 #pragma config FOSC = INTOSC    // Oscillator Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
-#pragma config WDTE = ON        // Watchdog Timer Enable (WDT enabled)
+#pragma config WDTE = OFF        // Watchdog Timer Enable (WDT is off !!!!!!!!!!)
 #pragma config PWRTE = ON       // Power-up Timer Enable (PWRT enabled)
 #pragma config MCLRE = ON       // MCLR Pin Function Select (MCLR/VPP pin function is MCLR)
 #pragma config CP = OFF         // Flash Program Memory Code Protection (Program memory code protection is disabled)
@@ -69,12 +69,10 @@ void main(void)
         asm("nop");
         if(PORTAbits.RA0 == true)
         {
-            //char *ncount = atoi(callcount);
-            char *msg = "Hello Serial!\t";
-            sendstr(msg);
-            //sendstr(ncount);
-   
-            PORTCbits.RC0 = true;
+            PORTCbits.RC0 = true; // set status lamp
+            putc('a');
+            putc('b');
+            putc('\n');
         }
         else
         {
@@ -83,7 +81,7 @@ void main(void)
         
         for(char i=0;i<0xFF;i++);
         
-        asm("clrwdt"); // clear the watch dog timer
+        asm("clrwdt"); // clear the watch dog timer, this is an assembly command
     }
     
     return;
@@ -100,8 +98,8 @@ void main(void)
 
 void setup()
 {
-    // configure the internal clock.  100 Khz
-    OSCCON = 0b00100000;
+    // configure the internal clock.  125 Khz
+    OSCCON = 0b00100000; // see page 73 of the datasheet
     // configure the IO
     TRISA = 0xff; // input 
     //TRISC = 0x00; // output, right now it's turned off to test the serial stuff
@@ -136,8 +134,8 @@ void setup()
 void serialSetup()
 {
     // configure the IO ports for the serial ports
-    TRISCbits.TRISC4 = true; // configure RC4 as input since its RX
-    TRISCbits.TRISC5 = false; // configure RC5 as an output since it's TX
+    TRISCbits.TRISC4 = false; // configure RC4 as output since it's TX
+    TRISCbits.TRISC5 = true; // configure RC5 as input since it's RX
     for(char i=0;i<0xFF;i++); // delay for good measure 
     
     // TXSTA register is outlined on page 258 of the datasheet
@@ -152,7 +150,11 @@ void serialSetup()
     RCSTAbits.CREN = true; // enable continous recive.
     
     // configure the baud generator
-    // baoudcon register is on 290
+    // baoudcon register is on 290 of the datasheet
+    // used formula on page 261 to get a value of brg = 202.  
+    SPBRG = 0xCA;
+    TXREG = 0x00; // clear out the send register
+    unsigned char c = RCREG;
 }
 
 /*
@@ -166,8 +168,9 @@ void serialSetup()
 
 void putc(char ch)
 {
-    //while(!TXIF); // wait until the TXREG is ready for new information
+    while(TXSTAbits.TRMT != true); // wait until last byte is finished sending
     TXREG = ch;
+    asm("nop");
 }
 
 char getc()
