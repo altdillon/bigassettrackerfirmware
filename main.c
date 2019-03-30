@@ -17,7 +17,7 @@
 
 // CONFIG1
 #pragma config FOSC = INTOSC    // Oscillator Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
-#pragma config WDTE = OFF        // Watchdog Timer Enable (WDT is off !!!!!!!!!!)
+#pragma config WDTE = OFF       // Watchdog Timer Enable (WDT disabled)
 #pragma config PWRTE = ON       // Power-up Timer Enable (PWRT enabled)
 #pragma config MCLRE = ON       // MCLR Pin Function Select (MCLR/VPP pin function is MCLR)
 #pragma config CP = OFF         // Flash Program Memory Code Protection (Program memory code protection is disabled)
@@ -31,7 +31,7 @@
 #pragma config CPUDIV = NOCLKDIV// CPU System Clock Selection Bit (NO CPU system divide)
 #pragma config USBLSCLK = 48MHz // USB Low SPeed Clock Selection bit (System clock expects 48 MHz, FS/LS USB CLKENs divide-by is set to 8.)
 #pragma config PLLMULT = 3x     // PLL Multipler Selection Bit (3x Output Frequency Selected)
-#pragma config PLLEN = ENABLED  // PLL Enable Bit (3x or 4x PLL Enabled)
+#pragma config PLLEN = DISABLED // PLL Enable Bit (3x or 4x PLL Disabled)
 #pragma config STVREN = ON      // Stack Overflow/Underflow Reset Enable (Stack Overflow or Underflow will cause a Reset)
 #pragma config BORV = LO        // Brown-out Reset Voltage Selection (Brown-out Reset Voltage (Vbor), low trip point selected.)
 #pragma config LPBOR = OFF      // Low-Power Brown Out Reset (Low-Power BOR is disabled)
@@ -99,7 +99,8 @@ void main(void)
 void setup()
 {
     // configure the internal clock.  125 Khz
-    OSCCON = 0b00100000; // see page 73 of the datasheet
+    //OSCCON = 0b00100000; // see page 73 of the datasheet, 126 kHz
+    OSCCON = 0b00111000; // 8mHz
     // configure the IO
     TRISA = 0xff; // input 
     //TRISC = 0x00; // output, right now it's turned off to test the serial stuff
@@ -141,18 +142,19 @@ void serialSetup()
     // TXSTA register is outlined on page 258 of the datasheet
     TXSTAbits.TXEN = true; // enable transmitting
     TXSTAbits.SYNC = false; // use async mode
-    TXSTAbits.SENDB = false; // send break character as soon as the transmission is completed
+    TXSTAbits.SENDB = true; // send break character as soon as the transmission is completed
     TXSTAbits.TX9 = false; // select 8 bit word size.  As aposed to 9bit
     
     // RCSTA register is outlined on page 259 of the datasheet
     RCSTAbits.SREN = true; // enable the serial port
-    RCSTAbits.RX9 = false; // accept 8bit values
-    RCSTAbits.CREN = true; // enable continous recive.
+    RCSTAbits.RX9 = false; // accept 8bit values, so RX9 is false
+    RCSTAbits.CREN = false; // disable continous recive.
     
     // configure the baud generator
     // baoudcon register is on 290 of the datasheet
     // used formula on page 261 to get a value of brg = 202.  
-    SPBRG = 0xCA;
+    //SPBRG = 0xCA;
+    SPBRG = 12;
     TXREG = 0x00; // clear out the send register
     unsigned char c = RCREG;
 }
