@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=bigasstrackerfirmwere
+PROJECTNAME=LTEpic_test.X
 
 # Active Configuration
 DEFAULTCONF=free
