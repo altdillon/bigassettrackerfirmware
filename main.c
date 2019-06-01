@@ -45,6 +45,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "sparkfun_lte.h"
+#include "states.h"
 
 
 // prototypes for the setup functions
