@@ -30,8 +30,11 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef XC_HEADER_TEMPLATE_H
-#define	XC_HEADER_TEMPLATE_H
+#ifndef USART_SERIAL_HEADER
+#define	USART_SERIAL_HEADER
+// macros for new lines
+#define NEWLINE '\n'
+#define CARRAGERETURN '\r'
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include <string.h>
@@ -40,7 +43,8 @@
 // prototypes for functions
 void usart_setup(); // setup the registers to correct values 
 void putch(char ch); // send a single char
-char getch(); // get a single char 
+void flush();
+char getln(char *buffer,char length); // read a number of characters into buffer, length is the max number of chars to be read
 char putln(char *str); // send a full string
 
 
