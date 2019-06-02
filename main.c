@@ -50,7 +50,6 @@
 // global values
 bool running;
 STATE_T current_state;
-char strdat[16];
 
 // prototypes for the setup functions
 void setup(); 
@@ -58,23 +57,29 @@ void pingpong(); // simple game to test the serial
 
 int main()
 {
-    setup(); // setup all the timers and general io
-    usart_setup(); // setup the serial comminication syste,
+    //setup(); // setup all the timers and general io
+    //usart_setup(); // setup the serial comminication syste,
     running = true;
+    current_state = ST_START;
     
     while(running)
     {
         STATE_T next_state;
         
-        pingpong();
-        //char bytercd = getln(strdat,16);
-        //asm("nop");
-        //strcat(strdat,"\n");
-        //putln(strdat);
-        //flush();
-        
-        //char a;
-        //for(a=0;a<0xff;a++);
+        // using a switch case to implement a state mashine
+        switch(current_state)
+        {
+            case ST_START:
+                setup(); // setup the general IO
+                usart_setup(); // setup the usart
+                next_state = ST_PINGPONG; // Right now the next state is just gonna be ping pong
+                break;
+            case ST_PINGPONG:
+                pingpong(); // run the ping pong function
+                next_state = ST_PINGPONG; // nextstate is pingpong
+                break;
+        }
+
         current_state = next_state; // update to the next state
     }
     
