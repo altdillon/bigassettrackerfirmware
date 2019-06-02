@@ -33,10 +33,16 @@
 
 // define macros for the states
 // ideally numbers should be less than 255
-#define ST_START 0
-#define ST_TEST 1
-#define ST_STOP 2
-#define ST_PINGPONG 100
+#define ST_START 1 // start up the micro
+#define ST_HOLOGRAM_CONNECT 2 // connect to hologram
+#define ST_HOLOGRAM_DISCONNECT 3 // disconnect from hologram
+#define ST_CHECK_ENVIROMENT 4 // take envrimental readings
+#define ST_SEND_FAILSTATE 5 // tell hologram that we've failed
+#define ST_SLEEP_MODE 6 // put the micro to sleep
+#define ST_CHECK_BATTERY 7 // check the battery
+#define ST_SEND_UPDATE 8 // send normal update to hologram
+#define ST_GET_FROM_HOLOGRAM 9
+#define ST_PINGPONG 10
 
 // define state type 
 typedef unsigned char STATE_T;

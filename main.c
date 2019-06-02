@@ -16,7 +16,7 @@
 
 // CONFIG1
 #pragma config FOSC = INTOSC    // Oscillator Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
-#pragma config WDTE = OFF       // Watchdog Timer Enable (WDT disabled)
+#pragma config WDTE = ON        // Watchdog Timer Enable (WDT enabled)
 #pragma config PWRTE = ON       // Power-up Timer Enable (PWRT enabled)
 #pragma config MCLRE = ON       // MCLR Pin Function Select (MCLR/VPP pin function is MCLR)
 #pragma config CP = OFF         // Flash Program Memory Code Protection (Program memory code protection is disabled)
@@ -69,17 +69,51 @@ int main()
         // using a switch case to implement a state mashine
         switch(current_state)
         {
-            case ST_START:
+            case ST_START: 
                 setup(); // setup the general IO
                 usart_setup(); // setup the usart
                 next_state = ST_PINGPONG; // Right now the next state is just gonna be ping pong
                 break;
+                
             case ST_PINGPONG:
                 pingpong(); // run the ping pong function
                 next_state = ST_PINGPONG; // nextstate is pingpong
                 break;
+                
+            case ST_HOLOGRAM_CONNECT:
+                
+                break;
+                
+            case ST_HOLOGRAM_DISCONNECT:
+                
+                break;
+                
+            case ST_CHECK_ENVIROMENT:
+                
+                break;
+                
+            case ST_SEND_FAILSTATE:
+                
+                break;
+                
+            case  ST_SLEEP_MODE:
+                
+                break;
+                
+            case ST_CHECK_BATTERY:
+                
+                break;
+                
+            case ST_SEND_UPDATE:
+                
+                break;
+                
+            case ST_GET_FROM_HOLOGRAM:
+                
+                break;
         }
-
+        
+        asm("clrwdt"); // clear the watch dog timer
         current_state = next_state; // update to the next state
     }
     
