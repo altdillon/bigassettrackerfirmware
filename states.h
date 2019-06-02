@@ -26,15 +26,17 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef XC_HEADER_TEMPLATE_H
-#define	XC_HEADER_TEMPLATE_H
+#ifndef STATES_HEADER
+#define	STATES_HEADER
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-// define macros for the states 
+// define macros for the states
+// ideally numbers should be less than 255
 #define ST_START 0
 #define ST_TEST 1
 #define ST_STOP 2
+#define ST_PINGPONG 100
 
 // define state type 
 typedef unsigned char STATE_T;

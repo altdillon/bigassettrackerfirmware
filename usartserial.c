@@ -1,6 +1,9 @@
 #include "usartserial.h"
 
-// define the bodies of the serial functions
+/*
+ * defintions of serial functions
+ */
+
 void usart_setup()
 {
     /* Enabling transmitter 23.1.1.1 page 259 - TX/CK I/O pin */
@@ -56,7 +59,33 @@ char putln(char *str)
     return bytes_sent;
 }
 
-char getch()
+char getln(char *buffer,char length)
 {
-    return -1; // stub
+    char chbuffer = 0;
+    unsigned char index;
+    for(index=0;index<length;index++)
+    {
+        while(PIR1bits.RCIF == 0); // wait for character to become avalible
+        // then copy the byte over and make see if its one of end line bits
+        chbuffer = RCREG; 
+        if(chbuffer == CARRAGERETURN || chbuffer == NEWLINE || chbuffer == '\0') // check to see if the message has been terminated 
+        {
+            break; 
+        }
+        else
+        {
+            buffer[index] = chbuffer;
+        }
+    }
+    
+    return index; // return the number of bytes read from the serial buffer
+}
+
+void flush()
+{
+    char thevoid;
+    while(PIR1bits.RCIF == 1)
+    {
+        thevoid = RCREG;
+    }
 }

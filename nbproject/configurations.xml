@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>sparkfun_lte.h</itemPath>
       <itemPath>usartserial.h</itemPath>
+      <itemPath>states.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

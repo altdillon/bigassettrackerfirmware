@@ -10,7 +10,6 @@
  * 
  */
 
-
 // PIC16F1455 Configuration Bit Settings
 
 // 'C' source line config statements
@@ -46,24 +45,73 @@
 #include <string.h>
 #include "sparkfun_lte.h"
 #include "states.h"
+#include "usartserial.h"
 
+// global values
+bool running;
+STATE_T current_state;
+char strdat[16];
 
 // prototypes for the setup functions
 void setup(); 
-
+void pingpong(); // simple game to test the serial 
 
 int main()
 {
-    setup();
+    setup(); // setup all the timers and general io
+    usart_setup(); // setup the serial comminication syste,
+    running = true;
     
-    while(true)
+    while(running)
     {
+        STATE_T next_state;
         
+        pingpong();
+        //char bytercd = getln(strdat,16);
+        //asm("nop");
+        //strcat(strdat,"\n");
+        //putln(strdat);
+        //flush();
+        
+        //char a;
+        //for(a=0;a<0xff;a++);
+        current_state = next_state; // update to the next state
     }
     
+    return 0;
 }
 
 void setup()
 {
+    OSCCON = 0b00110100; // set the system clock to 4 Mhz
+    /* Select pins 4&5 as the uart - page 102 */
+    TRISCbits.TRISC4 = 0;   /* RC4 as output  */
+    TRISCbits.TRISC5 = 1;   /* RC5 as input */
+    TRISAbits.TRISA5 = 0; // RA5 as an output
+}
+
+/*
+ *  ping pont
+ *  you type ping it types pong
+ *  you type pong it types ping
+ */
+
+void pingpong()
+{
+    char strIn[16];
+    memset(strIn,'\0',16); // make sure that strIn is clear
     
+    char bytesin = getln(strIn,16);
+    if(bytesin > 0)
+    {
+        if(strcmp(strIn,"ping") == 0)
+        {
+            putln("pong\n");
+        }
+        else if(strcmp(strIn,"pong") == 0)
+        {
+            putln("ping\n");
+        }
+    }
+    flush(); // flush the serial ports
 }

@@ -43,7 +43,7 @@
 // prototypes for functions
 void usart_setup(); // setup the registers to correct values 
 void putch(char ch); // send a single char
-void flush();
+void flush(); // flush out the input register
 char getln(char *buffer,char length); // read a number of characters into buffer, length is the max number of chars to be read
 char putln(char *str); // send a full string
 
