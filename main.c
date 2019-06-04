@@ -111,6 +111,9 @@ int main()
             case ST_GET_FROM_HOLOGRAM:
                 
                 break;
+            case ST_I2C_TEST:
+                
+                break;
         }
         
         asm("clrwdt"); // clear the watch dog timer

@@ -19,35 +19,49 @@
  * TERMS. 
  */
 
-/*
- *  This header file defines all the states that the microcontroller will use
- *  it also defines the typedef for the state type, which is  STATE_T 
+/* 
+ * File:   
+ * Author: 
+ * Comments:
+ * Revision history: 
  */
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef STATES_HEADER
-#define	STATES_HEADER
+#ifndef I2C_HEADER_H
+#define	I2C_HEADER_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-// define macros for the states
-// ideally numbers should be less than 255
-#define ST_START 1 // start up the micro
-#define ST_HOLOGRAM_CONNECT 2 // connect to hologram
-#define ST_HOLOGRAM_DISCONNECT 3 // disconnect from hologram
-#define ST_CHECK_ENVIROMENT 4 // take envrimental readings
-#define ST_SEND_FAILSTATE 5 // tell hologram that we've failed
-#define ST_SLEEP_MODE 6 // put the micro to sleep
-#define ST_CHECK_BATTERY 7 // check the battery
-#define ST_SEND_UPDATE 8 // send normal update to hologram
-#define ST_GET_FROM_HOLOGRAM 9
-#define ST_PINGPONG 100
-#define ST_I2C_TEST 101
+// TODO Insert appropriate #include <>
 
-// define state type 
-typedef unsigned char STATE_T;
+// TODO Insert C++ class definitions if appropriate
 
+// TODO Insert declarations
+
+// Comment a function and leverage automatic documentation with slash star star
+/**
+    <p><b>Function prototype:</b></p>
+  
+    <p><b>Summary:</b></p>
+
+    <p><b>Description:</b></p>
+
+    <p><b>Precondition:</b></p>
+
+    <p><b>Parameters:</b></p>
+
+    <p><b>Returns:</b></p>
+
+    <p><b>Example:</b></p>
+    <code>
+ 
+    </code>
+
+    <p><b>Remarks:</b></p>
+ */
+// TODO Insert declarations or function prototypes (right here) to leverage 
+// live documentation
 
 #ifdef	__cplusplus
 extern "C" {

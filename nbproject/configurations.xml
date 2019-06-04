@@ -7,6 +7,7 @@
       <itemPath>sparkfun_lte.h</itemPath>
       <itemPath>usartserial.h</itemPath>
       <itemPath>states.h</itemPath>
+      <itemPath>pic_i2c.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -18,6 +19,7 @@
       <itemPath>main.c</itemPath>
       <itemPath>sparkfun_lte.c</itemPath>
       <itemPath>usartserial.c</itemPath>
+      <itemPath>pic_i2c.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
