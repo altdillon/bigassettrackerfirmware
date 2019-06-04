@@ -41,9 +41,9 @@
 #define ST_SLEEP_MODE 6 // put the micro to sleep
 #define ST_CHECK_BATTERY 7 // check the battery
 #define ST_SEND_UPDATE 8 // send normal update to hologram
-#define ST_GET_FROM_HOLOGRAM 9
-#define ST_PINGPONG 100
-#define ST_I2C_TEST 101
+#define ST_GET_FROM_HOLOGRAM 9 // pull data down from hologram
+#define ST_PINGPONG 100 // run the ping pong program, for testing serial
+#define ST_I2C_TEST 101 // special state for testing i2c
 
 // define state type 
 typedef unsigned char STATE_T;

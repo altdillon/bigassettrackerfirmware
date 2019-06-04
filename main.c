@@ -46,6 +46,7 @@
 #include "sparkfun_lte.h"
 #include "states.h"
 #include "usartserial.h"
+#include "pic_i2c.h"
 
 // global values
 bool running;
