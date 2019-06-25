@@ -65,7 +65,7 @@ unsigned char lookup[255] = {
     
          // wikipeida link that tells what this dose:
          // https://en.wikipedia.org/wiki/Pearson_hashing
-         unsigned char pearson_hash(char *str,unsigned char len);
+         unsigned short pearson_hash(char *str,unsigned char len);
          
     
 #ifdef	__cplusplus

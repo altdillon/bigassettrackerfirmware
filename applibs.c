@@ -1,10 +1,10 @@
 #include "app.h"
 
-unsigned char pearson_hash(char *str,unsigned char len)
+unsigned short pearson_hash(char *str,unsigned char len)
 {
-    unsigned char hash = len;
+    unsigned short hash = len;
 
-    unsigned char i;
+    unsigned short i;
     for(i=0;i<len;i++)
     {
         hash = lookup[hash^str[i]];
