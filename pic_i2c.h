@@ -31,7 +31,24 @@
 #ifndef I2C_HEADER_H
 #define	I2C_HEADER_H
 
-#include <xc.h> // include processor files - each processor file is guarded.  
+#include <xc.h> // include processor files - each processor file is guarded.
+#include <stdbool.h>
+#define MAX_I2C_DEVICES 10
+
+// struct for holding i2c address data
+typedef struct 
+{
+    unsigned char hits; // number of times the device has been written to
+    unsigned char i2c_addr; // i2c address of the device
+    bool isConnected; // boolean to make sure that the device is connected; may not be used
+}I2C_DEVICE_T;
+
+I2C_DEVICE_T i2c_devices[MAX_I2C_DEVICES];
+
+// functions for sending and recinving data from the i2c devices
+char i2c_sendbyte(I2C_DEVICE_T *dev,char *data);
+char i2c_readbyte(I2C_DEVICE_T *dev,char *data);
+char i2c_check_connections(I2C_DEVICE_T *device_arr,unsigned char device_count);
 
 // TODO Insert appropriate #include <>
 
