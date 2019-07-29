@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=LTEpic_test.X
+PROJECTNAME=bigassettrackerfirmware
 
 # Active Configuration
 DEFAULTCONF=free

@@ -73,7 +73,8 @@ int main()
             case ST_START: 
                 setup(); // setup the general IO
                 usart_setup(); // setup the usart
-                next_state = ST_PINGPONG; // Right now the next state is just gonna be ping pong
+                //next_state = ST_PINGPONG; 
+                next_state = ST_I2C_TEST; // go to I2c test state
                 break;
                 
             case ST_PINGPONG:
@@ -113,6 +114,9 @@ int main()
                 
                 break;
             case ST_I2C_TEST:
+                // i2c test function:  attempt to write something to the client, then read it back
+               // I2C_DEVICE_T test_device;
+                
                 
                 break;
         }
@@ -131,6 +135,9 @@ void setup()
     TRISCbits.TRISC4 = 0;   /* RC4 as output  */
     TRISCbits.TRISC5 = 1;   /* RC5 as input */
     TRISAbits.TRISA5 = 0; // RA5 as an output
+    
+    // configure the analog to digital converter.
+    
 }
 
 /*

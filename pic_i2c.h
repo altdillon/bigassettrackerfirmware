@@ -24,6 +24,10 @@
  * Author: 
  * Comments:
  * Revision history: 
+ * 
+ *  https://www.teachmemicro.com/pic16-i2c/
+ * 
+ * 
  */
 
 // This is a guard condition so that contents of this file are not included
@@ -46,50 +50,13 @@ typedef struct
 I2C_DEVICE_T i2c_devices[MAX_I2C_DEVICES];
 
 // functions for sending and recinving data from the i2c devices
-char i2c_sendbyte(I2C_DEVICE_T *dev,char *data);
-char i2c_readbyte(I2C_DEVICE_T *dev,char *data);
+char i2c_sendbyte(I2C_DEVICE_T *dev,char *data,unsigned char datalen);
+char i2c_readbyte(I2C_DEVICE_T *dev,char *data,unsigned char datalen);
 char i2c_check_connections(I2C_DEVICE_T *device_arr,unsigned char device_count);
+// helper functions for i2c functions
+void i2c_wait();
+I2C_DEVICE_T new_device(unsigned char addr); // not really needed, but makes progrmaing easier make code is more simple
 
-// TODO Insert appropriate #include <>
-
-// TODO Insert C++ class definitions if appropriate
-
-// TODO Insert declarations
-
-// Comment a function and leverage automatic documentation with slash star star
-/**
-    <p><b>Function prototype:</b></p>
-  
-    <p><b>Summary:</b></p>
-
-    <p><b>Description:</b></p>
-
-    <p><b>Precondition:</b></p>
-
-    <p><b>Parameters:</b></p>
-
-    <p><b>Returns:</b></p>
-
-    <p><b>Example:</b></p>
-    <code>
- 
-    </code>
-
-    <p><b>Remarks:</b></p>
- */
-// TODO Insert declarations or function prototypes (right here) to leverage 
-// live documentation
-
-#ifdef	__cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-    // TODO If C++ is being used, regular C code needs function names to have C 
-    // linkage so the functions can be used by the c code. 
-
-#ifdef	__cplusplus
-}
-#endif /* __cplusplus */
 
 #endif	/* XC_HEADER_TEMPLATE_H */
 
