@@ -16,7 +16,7 @@
 
 // CONFIG1
 #pragma config FOSC = INTOSC    // Oscillator Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
-#pragma config WDTE = ON        // Watchdog Timer Enable (WDT enabled)
+#pragma config WDTE = OFF        // Watchdog Timer Enable (WDT enabled) NOTE: turned off for i2c testing
 #pragma config PWRTE = ON       // Power-up Timer Enable (PWRT enabled)
 #pragma config MCLRE = ON       // MCLR Pin Function Select (MCLR/VPP pin function is MCLR)
 #pragma config CP = OFF         // Flash Program Memory Code Protection (Program memory code protection is disabled)
@@ -52,6 +52,10 @@
 bool running;
 STATE_T current_state;
 
+// global values for i2c devices 
+I2C_DEVICE_T test_device; // genral test device 
+I2C_DEVICE_T temp1,temp2,temp3; // idk, maybe we'll need 3 ?
+
 // prototypes for the setup functions
 void setup(); 
 void pingpong(); // simple game to test the serial 
@@ -77,9 +81,10 @@ int main()
                 next_state = ST_I2C_TEST; // go to I2c test state
                 break;
                 
-            case ST_PINGPONG:
+            case ST_PINGPONG: // test state for useart
                 pingpong(); // run the ping pong function
                 next_state = ST_PINGPONG; // nextstate is pingpong
+            
                 break;
                 
             case ST_HOLOGRAM_CONNECT:
@@ -114,11 +119,15 @@ int main()
                 
                 break;
             case ST_I2C_TEST:
-                // i2c test function:  attempt to write something to the client, then read it back
-               // I2C_DEVICE_T test_device;
-                
-                
-                break;
+               // i2c test function:  attempt to write something to the client, then read it back
+               //I2C_DEVICE_T dut;// = new_device(0x08);
+               test_device = new_device(0x08); 
+               char testdata = 0xEE;
+               char sndb = i2c_sendbyte(&test_device,&testdata,1);
+               
+               asm("nop");
+               next_state = ST_I2C_TEST; // go in a loop
+               break;
         }
         
         asm("clrwdt"); // clear the watch dog timer

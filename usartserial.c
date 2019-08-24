@@ -59,6 +59,15 @@ char putln(char *str)
     return bytes_sent;
 }
 
+void putln_size(char *str,unsigned char length)
+{
+    unsigned char i;
+    for(i=0;i<length;i++)
+    {
+        putch(str[i]);
+    }
+}
+
 char getln(char *buffer,char length)
 {
     char chbuffer = 0;
