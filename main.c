@@ -16,7 +16,7 @@
 
 // CONFIG1
 #pragma config FOSC = INTOSC    // Oscillator Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
-#pragma config WDTE = OFF        // Watchdog Timer Enable (WDT enabled) NOTE: turned off for i2c testing
+#pragma config WDTE = ON        // Watchdog Timer Enable (WDT enabled) NOTE: turned off for i2c testing
 #pragma config PWRTE = ON       // Power-up Timer Enable (PWRT enabled)
 #pragma config MCLRE = ON       // MCLR Pin Function Select (MCLR/VPP pin function is MCLR)
 #pragma config CP = OFF         // Flash Program Memory Code Protection (Program memory code protection is disabled)
@@ -47,6 +47,7 @@
 #include "states.h"
 #include "usartserial.h"
 #include "pic_i2c.h"
+#include "app.h" // headers for json, 
 
 // global values
 bool running;
@@ -66,6 +67,7 @@ int main()
     //usart_setup(); // setup the serial comminication syste,
     running = true;
     current_state = ST_START;
+    unsigned short adreading; // test value for ADC
     
     while(running)
     {
@@ -77,8 +79,10 @@ int main()
             case ST_START: 
                 setup(); // setup the general IO
                 usart_setup(); // setup the usart
+                AD_setup(); // setup the analog to digital converter
                 //next_state = ST_PINGPONG; 
-                next_state = ST_I2C_TEST; // go to I2c test state
+                //next_state = ST_I2C_TEST; // go to I2c test state
+                next_state = ST_CHECK_POWERDRAW;
                 break;
                 
             case ST_PINGPONG: // test state for useart
@@ -107,8 +111,11 @@ int main()
                 
                 break;
                 
-            case ST_CHECK_BATTERY:
+            case ST_CHECK_POWERDRAW:
+                adreading = get_voltage(); 
                 
+                asm("nop");
+                next_state = ST_CHECK_POWERDRAW;
                 break;
                 
             case ST_SEND_UPDATE:
