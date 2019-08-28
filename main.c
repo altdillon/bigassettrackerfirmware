@@ -112,9 +112,9 @@ int main()
                 break;
                 
             case ST_CHECK_POWERDRAW:
-                //adreading = get_voltage(); 
+                adreading = read_AD(); 
                 
-                //asm("nop");
+                asm("nop");
                 next_state = ST_CHECK_POWERDRAW;
                 break;
                 

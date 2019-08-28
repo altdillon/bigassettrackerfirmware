@@ -21,3 +21,12 @@ void AD_setup()
     char i;
     for(i=0x00;i<0xff;i++); //delay to set up the a/d 
 }
+
+short read_AD()
+{
+    // start the ADREADing
+    ADCON0bits.ADGO = 1;
+    while(ADCON0bits.ADGO); // wait for the read to finish
+    return ADRES;
+}
+

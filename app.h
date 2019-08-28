@@ -67,6 +67,10 @@ unsigned char lookup[255] = {
          // https://en.wikipedia.org/wiki/Pearson_hashing
          unsigned short pearson_hash(char *str,unsigned char len);
          void AD_setup();
+         short read_AD(); // do a single blocking read from the analog to digital converter
+         float read_voltage(); // voltage
+         float read_current(); // current
+         float read_power(); // power = voltage * current
     
 #ifdef	__cplusplus
 extern "C" {
