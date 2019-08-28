@@ -39,7 +39,7 @@
 #define ST_CHECK_ENVIROMENT 4 // take envrimental readings
 #define ST_SEND_FAILSTATE 5 // tell hologram that we've failed
 #define ST_SLEEP_MODE 6 // put the micro to sleep
-#define ST_CHECK_BATTERY 7 // check the battery
+#define ST_CHECK_POWERDRAW 7 // check the battery
 #define ST_SEND_UPDATE 8 // send normal update to hologram
 #define ST_GET_FROM_HOLOGRAM 9 // pull data down from hologram
 #define ST_PINGPONG 100 // run the ping pong program, for testing serial

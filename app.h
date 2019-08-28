@@ -36,7 +36,7 @@
 #define	APP_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
-
+#include <stdbool.h>
 
     // 255 value update list
     // this is used by the pearson hash to generate values
@@ -66,7 +66,7 @@ unsigned char lookup[255] = {
          // wikipeida link that tells what this dose:
          // https://en.wikipedia.org/wiki/Pearson_hashing
          unsigned short pearson_hash(char *str,unsigned char len);
-         
+         void AD_setup();
     
 #ifdef	__cplusplus
 extern "C" {
