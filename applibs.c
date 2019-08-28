@@ -13,6 +13,8 @@ unsigned short pearson_hash(char *str,unsigned char len)
     return hash;
 }
 
+// functions for seting up and reading the Analog to digital converter
+
 void AD_setup()
 {
     ADCON1=0b11100000;
@@ -30,3 +32,23 @@ short read_AD()
     return ADRES;
 }
 
+// functions for reading power and current and voltage...
+// special thanks to Dana
+float read_voltage()
+{
+    float adread = (float)read_AD(); // this is dirty...
+    float volts = 5*(adread/1024);
+    return volts;
+}
+
+float read_current()
+{
+    float I = read_voltage()/SENSR; 
+    return I;
+}
+
+float read_power()
+{
+    float P = read_voltage() * read_current();
+    return P;
+}

@@ -112,7 +112,10 @@ int main()
                 break;
                 
             case ST_CHECK_POWERDRAW:
-                adreading = read_AD(); 
+                // make test calls to the power sensing stuff
+                read_current();
+                read_voltage();
+                read_power();
                 
                 asm("nop");
                 next_state = ST_CHECK_POWERDRAW;
@@ -152,7 +155,8 @@ void setup()
     TRISCbits.TRISC5 = 1;   /* RC5 as input */
     TRISAbits.TRISA5 = 0; // RA5 as an output
     
-    // configure the analog to digital converter.
+    // configure IO for analog to digital converter
+    TRISCbits.TRISC3 = 1; // RC3 is an input
     
 }
 

@@ -34,6 +34,7 @@
 // more than once.  
 #ifndef APP_H
 #define	APP_H
+#define SENSR 10 // value in ohms of the voltage sensing resistor
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include <stdbool.h>
