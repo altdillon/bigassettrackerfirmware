@@ -16,8 +16,8 @@ unsigned short pearson_hash(char *str,unsigned char len)
 void AD_setup()
 {
     ADCON1=0b11100000;
-    ADCON0=0b00001101;
-    ANSELAbits.ANSA4=true;
+    ADCON0=0b00011101;
+    ANSELCbits.ANSC3 = 1;
     char i;
     for(i=0x00;i<0xff;i++); //delay to set up the a/d 
 }
