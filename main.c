@@ -79,6 +79,7 @@ int main()
             case ST_START: 
                 setup(); // setup the general IO
                 usart_setup(); // setup the usart
+                IREF_setup(); // setup the internal voltage refrence
                 AD_setup(); // setup the analog to digital converter
                 //next_state = ST_PINGPONG; 
                 //next_state = ST_I2C_TEST; // go to I2c test state

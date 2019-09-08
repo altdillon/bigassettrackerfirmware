@@ -35,6 +35,7 @@
 #ifndef APP_H
 #define	APP_H
 #define SENSR 10 // value in ohms of the voltage sensing resistor
+#define VREF 2.048
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include <stdbool.h>
@@ -68,6 +69,7 @@ unsigned char lookup[255] = {
          // https://en.wikipedia.org/wiki/Pearson_hashing
          unsigned short pearson_hash(char *str,unsigned char len);
          void AD_setup();
+         void IREF_setup(); // function to setup the internal voltage refrence
          short read_AD(); // do a single blocking read from the analog to digital converter
          float read_voltage(); // voltage
          float read_current(); // current
