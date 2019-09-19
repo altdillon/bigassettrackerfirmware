@@ -98,3 +98,9 @@ void flush()
         thevoid = RCREG;
     }
 }
+
+bool is_Avaible()
+{
+    // wrapper for one status bit, but this will make thinges easer to read
+    return PIR1bits.RCIF; 
+}
