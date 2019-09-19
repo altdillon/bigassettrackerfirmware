@@ -47,6 +47,7 @@ void flush(); // flush out the input register
 char getln(char *buffer,char length); // read a number of characters into buffer, length is the max number of chars to be read
 char putln(char *str); // send a full string
 void putln_size(char *str,unsigned char length); // send a string with a fixed length (not tested as of 8/24)
+bool is_Avaible(); // true if there's data in the buffer to read
 
 #ifdef	__cplusplus
 extern "C" {
