@@ -77,6 +77,10 @@ typedef char lte_shield_message_format_t;
 #define LTE_SHIELD_MESSAGE_FORMAT_PDU 0
 #define LTE_SHIELD_MESSAGE_FORMAT_TEXT 1
 
+// define the millisecond count variable in the LTE lib since it'll be used in here
+// right now I guess this makes since 
+unsigned int mill_seconds;
+
 struct DateData {
     uint8_t day;
     uint8_t month;

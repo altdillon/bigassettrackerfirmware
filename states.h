@@ -43,7 +43,7 @@
 #define ST_SEND_UPDATE 8 // send normal update to hologram
 #define ST_GET_FROM_HOLOGRAM 9 // pull data down from hologram
 #define ST_PINGPONG 100 // run the ping pong program, for testing serial
-#define ST_I2C_TEST 101 // special state for testing i2c
+#define ST_FUNCT_TEST 101 // special testing state used to tesk functions while under devlopment
 
 // define state type 
 typedef unsigned char STATE_T;

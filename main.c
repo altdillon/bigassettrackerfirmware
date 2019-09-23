@@ -43,6 +43,7 @@
 
 #include <stdbool.h>
 #include <string.h>
+#include <pic16f1455.h>
 #include "sparkfun_lte.h"
 #include "states.h"
 #include "usartserial.h"
@@ -61,6 +62,18 @@ I2C_DEVICE_T temp1,temp2,temp3; // idk, maybe we'll need 3 ?
 void setup(); 
 void pingpong(); // simple game to test the serial 
 
+// interrupt service routine used for updateing the counter 
+#define TMR0_RESET (0xFF - 250 + 1)
+void __interrupt() tmr0isr()
+{
+    if(T0IF) // if interupt was triggerd by timer 0 overflow...
+    {
+        TMR0 = TMR0_RESET;
+        T0IF = 0;
+        mill_seconds++; // mill_seconds is defined in sparkfun_let.h
+    }
+}
+
 int main()
 {
     //setup(); // setup all the timers and general io
@@ -68,6 +81,7 @@ int main()
     running = true;
     current_state = ST_START;
     unsigned short adreading; // test value for ADC
+    char bufferC = 0; // buffer for portC, used in some testing functions
     
     while(running)
     {
@@ -82,8 +96,8 @@ int main()
                 IREF_setup(); // setup the internal voltage refrence
                 AD_setup(); // setup the analog to digital converter
                 //next_state = ST_PINGPONG; 
-                //next_state = ST_I2C_TEST; // go to I2c test state
-                next_state = ST_CHECK_POWERDRAW;
+                next_state = ST_FUNCT_TEST; // goto the genral test state
+                //next_state = ST_CHECK_POWERDRAW;
                 break;
                 
             case ST_PINGPONG: // test state for useart
@@ -129,15 +143,17 @@ int main()
             case ST_GET_FROM_HOLOGRAM:
                 
                 break;
-            case ST_I2C_TEST:
-               // i2c test function:  attempt to write something to the client, then read it back
-               //I2C_DEVICE_T dut;// = new_device(0x08);
-               test_device = new_device(0x08); 
-               char testdata = 0xEE;
-               char sndb = i2c_sendbyte(&test_device,&testdata,1);
-               
-               asm("nop");
-               next_state = ST_I2C_TEST; // go in a loop
+            case ST_FUNCT_TEST:
+
+                // print out a 1hz wave using the millisecond counter
+                if(mill_seconds >= 500)
+                {
+                    bufferC ^= 0x01; // blink RC0
+                    PORTC = bufferC;
+                    mill_seconds = 0;
+                }
+                
+               next_state = ST_FUNCT_TEST; // go in a loop
                break;
         }
         
@@ -152,13 +168,18 @@ void setup()
 {
     OSCCON = 0b00110100; // set the system clock to 4 Mhz
     /* Select pins 4&5 as the uart - page 102 */
+    TRISCbits.TRISC0 = 0; // RC0 as an output
     TRISCbits.TRISC4 = 0;   /* RC4 as output  */
     TRISCbits.TRISC5 = 1;   /* RC5 as input */
     TRISAbits.TRISA5 = 0; // RA5 as an output
     
     // configure IO for analog to digital converter
     TRISCbits.TRISC3 = 1; // RC3 is an input
-    
+    // configure timer0 prescaler and interupts
+    OPTION_REG = 0b10000001; // option reg, datasheet page 178
+    // configure global interupt bois
+    T0IE = 1; // tmr0 interupt
+    GIE = 1; // global interupt
 }
 
 /*
