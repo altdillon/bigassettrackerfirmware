@@ -95,14 +95,14 @@ int main()
                 usart_setup(); // setup the usart
                 IREF_setup(); // setup the internal voltage refrence
                 AD_setup(); // setup the analog to digital converter
-                //next_state = ST_PINGPONG; 
-                next_state = ST_FUNCT_TEST; // goto the genral test state
+                next_state = ST_PINGPONG; 
+                //next_state = ST_FUNCT_TEST; // goto the genral test state
                 //next_state = ST_CHECK_POWERDRAW;
                 break;
                 
             case ST_PINGPONG: // test state for useart
                 pingpong(); // run the ping pong function
-                next_state = ST_PINGPONG; // nextstate is pingpong
+                next_state = ST_FUNCT_TEST; 
             
                 break;
                 
@@ -153,7 +153,9 @@ int main()
                     mill_seconds = 0;
                 }
                 
-               next_state = ST_FUNCT_TEST; // go in a loop
+                
+                
+               next_state = ST_PINGPONG; // go in a loop
                break;
         }
         
@@ -169,8 +171,8 @@ void setup()
     OSCCON = 0b00110100; // set the system clock to 4 Mhz
     /* Select pins 4&5 as the uart - page 102 */
     TRISCbits.TRISC0 = 0; // RC0 as an output
-    TRISCbits.TRISC4 = 0;   /* RC4 as output  */
-    TRISCbits.TRISC5 = 1;   /* RC5 as input */
+    //TRISCbits.TRISC4 = 0;   /* RC4 as output TX pin 6 */
+    //TRISCbits.TRISC5 = 1;   /* RC5 as input RX  pin 5*/
     TRISAbits.TRISA5 = 0; // RA5 as an output
     
     // configure IO for analog to digital converter
@@ -193,17 +195,25 @@ void pingpong()
     char strIn[16];
     memset(strIn,'\0',16); // make sure that strIn is clear
     
-    char bytesin = getln(strIn,16);
-    if(bytesin > 0)
+    if(is_Avaible())
     {
-        if(strcmp(strIn,"ping") == 0)
+        char bytesin = getln(strIn,16);
+        if(bytesin > 0)
         {
-            putln("pong\n");
+            if(strcmp(strIn,"ping") == 0)
+            {
+                putln("pong\n");
+            }
+            else if(strcmp(strIn,"pong") == 0)
+            {
+                putln("ping\n");
+            }
+            else if(strcmp(strIn,"self destruct") == 0)
+            {
+                putln("preparing to self destruct....\n");
+                putln("have a nice day :) \n");
+            }
         }
-        else if(strcmp(strIn,"pong") == 0)
-        {
-            putln("ping\n");
-        }
+        flush(); // flush the serial ports
     }
-    flush(); // flush the serial ports
 }

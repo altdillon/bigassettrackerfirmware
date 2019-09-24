@@ -17,6 +17,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h> // some of the structs need this.  Don't remove
+#include "usartserial.h"
 
 #define LTE_SHIELD_POWER_PIN 5
 #define LTE_SHIELD_RESET_PIN 6
@@ -78,6 +79,7 @@ typedef char lte_shield_message_format_t;
 #define LTE_SHIELD_MESSAGE_FORMAT_TEXT 1
 
 // define the millisecond count variable in the LTE lib since it'll be used in here
+// this variable is incrimented in the isr function in main.c
 // right now I guess this makes since 
 unsigned int mill_seconds;
 
@@ -143,8 +145,9 @@ bool begin(unsigned short baud_rate);
 // functions defined in line 160 of the gitrepo
 // loop polling and polling setup
 bool poll();
-LTE_Shield_error_t at(); 
-LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * expectedResponse, char * responseDest, unsigned long commandTimeout, bool at);
-
+LTE_Shield_error_t AT(); // send an AT test command 
+LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * expectedResponse, char * responseDest, unsigned int commandTimeout, bool at);
+void send_command(char *cmd,bool at); // send a command, maybe with an AT
+int read_responce(char *data,unsigned int timeout); // 
 
 #endif	/* SPARKFUN_LTE_H */

@@ -50,3 +50,78 @@ const char LTE_SHIELD_RESPONSE_OK[] = "OK\r\n";
 // CTRL+Z and ESC ASCII codes for SMS message sends
 const char ASCII_CTRL_Z = 0x1A;
 const char ASCII_ESC = 0x1B;
+
+int read_responce(char *data,unsigned int timeout)
+{
+    unsigned char len;
+    unsigned int time_in;
+    bool rcvd = false;
+    time_in = mill_seconds;
+    while(time_in + timeout > mill_seconds)
+    {
+        if(is_Avaible()) // if there are bytes to read...
+        {
+            rcvd = true;
+            char c = getch(); // read a single char
+            if(data != NULL)
+            {
+                data[len++] = c;
+            }
+        }
+    }
+    
+    // terminate the string
+    if(data != NULL)
+    {
+        data[len] = '\0';
+    }
+    // if found is true, then return the length of bytes received.  Othersize return a -1
+    if(rcvd == true)
+    {
+        return len;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+void send_command(char *cmd,bool at)
+{
+    if(at)
+    {
+        putln("AT");
+    }
+    putln(cmd);
+    putch('\r');
+}
+
+LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * expectedResponse, char * responseDest, unsigned int commandTimeout, bool at)
+{
+    // setup some instance variables
+    LTE_Shield_error_t success;
+    unsigned int timeIn;
+    bool found = false;
+    unsigned char index = 0;
+    unsigned char dest_index = 0;
+    send_command(command,at); // send the command to the client device
+    // wait for a response
+    char read_bytes = read_responce(responseDest,LTE_SHIELD_STANDARD_RESPONSE_TIMEOUT);
+    if(read_bytes > 0) 
+    {
+        if(strcmp(expectedResponse,responseDest) == 0)
+        {
+            success = LTE_SHIELD_ERROR_SUCCESS;
+        }
+        else
+        {
+            success = LTE_SHIELD_ERROR_UNEXPECTED_RESPONSE;
+        }
+    }
+    else
+    {
+        success = LTE_SHIELD_ERROR_NO_RESPONSE; // if no bytes found, then no responce
+    }
+    
+    return success;
+}

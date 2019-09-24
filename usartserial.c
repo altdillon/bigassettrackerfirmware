@@ -46,6 +46,20 @@ void putch(char ch)
     }
 }
 
+// non blocking function to read a char from serial
+char getch()
+{
+    // if there is a character to read, then return it, else return a -1
+    if(PIR1bits.RCIF) 
+    {
+        return RCREG;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
 char putln(char *str)
 {
     char bytes_sent = strlen(str);
