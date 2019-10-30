@@ -30,6 +30,17 @@ void usart_setup()
     //PIE1bits.RCIE = 1;
 }
 
+// set desired baud rate
+// this function always assumes a 4Mhz clock
+void set_baud(unsigned long desired_baud)
+{
+    unsigned long Fosc = 4000000; // 6 zeros, I counted...
+    unsigned long x = Fosc/desired_baud;
+    x = x/32; // 16 bit baud gen
+    x = x -1;
+    SPBRGL = floor(x);
+}
+
 // blocking function to write 1 byte to serial
 // assumes no asych interups or anything that fancy.
 void putch(char ch)
@@ -117,4 +128,16 @@ bool is_Avaible()
 {
     // wrapper for one status bit, but this will make thinges easer to read
     return PIR1bits.RCIF; 
+}
+
+bool is_whitespace(char c)
+{
+    bool whitespace = false;
+    
+    if(c == 0x20 || c == NEWLINE || c == CARRAGERETURN)
+    {
+        whitespace = true;
+    }
+    
+    return whitespace;
 }

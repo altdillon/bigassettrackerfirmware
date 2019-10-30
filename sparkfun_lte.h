@@ -78,10 +78,24 @@ typedef char lte_shield_message_format_t;
 #define LTE_SHIELD_MESSAGE_FORMAT_PDU 0
 #define LTE_SHIELD_MESSAGE_FORMAT_TEXT 1
 
+// array of supported baud rates for the LTE system
+#define NUM_SUPPORTED_BAUD 6
+const unsigned int LTE_SHIELD_SUPPORTED_BAUD[NUM_SUPPORTED_BAUD] =
+{
+    115200,
+    9600,
+    19200,
+    38400,
+    57600,
+    230400
+};
+
 // define the millisecond count variable in the LTE lib since it'll be used in here
 // this variable is incrimented in the isr function in main.c
 // right now I guess this makes since 
 unsigned int mill_seconds;
+
+void bDelay_ms(unsigned int delayms);
 
 struct DateData {
     uint8_t day;
@@ -147,7 +161,8 @@ bool begin(unsigned short baud_rate);
 bool poll();
 LTE_Shield_error_t AT(); // send an AT test command 
 LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * expectedResponse, char * responseDest, unsigned int commandTimeout, bool at);
+LTE_Shield_error_t set_lte_baud(unsigned int baud); // set the desired baud rate on the lte board
 void send_command(char *cmd,bool at); // send a command, maybe with an AT
-int read_responce(char *data,unsigned int timeout); // 
+int read_responce(char *data,unsigned int timeout); // read a responce and return the number of bytes returned
 
 #endif	/* SPARKFUN_LTE_H */

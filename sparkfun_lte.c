@@ -51,6 +51,13 @@ const char LTE_SHIELD_RESPONSE_OK[] = "OK\r\n";
 const char ASCII_CTRL_Z = 0x1A;
 const char ASCII_ESC = 0x1B;
 
+// function for doing a simple blocking delay in ms
+void bDelay_ms(unsigned int delayms)
+{
+    unsigned int start_time = mill_seconds;
+    while(start_time+delayms > mill_seconds);
+}
+
 int read_responce(char *data,unsigned int timeout)
 {
     unsigned char len;
