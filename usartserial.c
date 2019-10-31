@@ -17,10 +17,10 @@ void usart_setup()
     TRISCbits.TRISC4 = 0;   /* RC4 as output  */
     TRISCbits.TRISC5 = 1;   /* RC5 as input */
 
-    /* assume 4MHz clock, 19k2 baud */
+    ///* assume 4MHz clock, 19k2 baud */
     TXSTAbits.BRGH = 0;
     BAUDCONbits.BRG16 = 1;
-    SPBRGL = 12;
+    //SPBRGL = 12; // defult baud
 
     /* Enable interrupts */
     //INTCONbits.GIE = 1;
@@ -31,14 +31,46 @@ void usart_setup()
 }
 
 // set desired baud rate
-// this function always assumes a 4Mhz clock
-void set_baud(unsigned long desired_baud)
+char set_baud(unsigned long desired_baud)
 {
-    unsigned long Fosc = 4000000; // 6 zeros, I counted...
-    unsigned long x = Fosc/desired_baud;
-    x = x/32; // 16 bit baud gen
-    x = x -1;
-    SPBRGL = floor(x);
+    char err = 0;
+    
+    if(TXSTAbits.TXEN && RCSTAbits.SPEN) // make sure that the serial device is already configured
+    {
+        // baud rates 230400 and 115200 reqire more percission than what the pic's floating point can provide
+        if(desired_baud == 230400)
+        {
+            
+            
+            //return 0; // early terminate
+        }
+        else if(desired_baud == 115200)
+        {
+            asm("nop");
+            //return 0; // early terminate
+        }
+        
+        // maybe swap this out for a loop up table
+        // compute the new baud rate
+        double set_baud = (double)desired_baud;
+        // see page 261 of the datasheet
+        //unsigned long Fosc = 4000000; // 6 zeros, I counted...
+        unsigned long Fosc = 16000000;
+        double x = Fosc/desired_baud;
+        x = x/16; // 16 bit baud gen
+        x = x -1;
+        SPBRGL = floor(x);
+        // compute the err between the set and desired baud rate
+        float calculated_baud_rate = set_baud/(16*(x+1));
+        float baud_err = (calculated_baud_rate - desired_baud)/desired_baud;
+        // figure out the the error is excpetable
+        if(abs(baud_err) > 0.1)
+        {
+            err = -1; // return -1 as an error code
+        }
+    }
+    
+    return err;
 }
 
 // blocking function to write 1 byte to serial
