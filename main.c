@@ -16,7 +16,7 @@
 
 // CONFIG1
 #pragma config FOSC = INTOSC    // Oscillator Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
-#pragma config WDTE = ON        // Watchdog Timer Enable (WDT enabled) NOTE: turned off for i2c testing
+#pragma config WDTE = OFF        // Watchdog Timer Enable (WDT not-enabled) NOTE: turned off for i2c testing
 #pragma config PWRTE = ON       // Power-up Timer Enable (PWRT enabled)
 #pragma config MCLRE = ON       // MCLR Pin Function Select (MCLR/VPP pin function is MCLR)
 #pragma config CP = OFF         // Flash Program Memory Code Protection (Program memory code protection is disabled)
@@ -93,10 +93,11 @@ int main()
             case ST_START: 
                 setup(); // setup the general IO
                 usart_setup(); // setup the usart
+                set_baud(230400); // test baud select
                 IREF_setup(); // setup the internal voltage refrence
                 AD_setup(); // setup the analog to digital converter
-                next_state = ST_PINGPONG; 
-                //next_state = ST_FUNCT_TEST; // goto the genral test state
+                //next_state = ST_PINGPONG; 
+                next_state = ST_FUNCT_TEST; // goto the genral test state
                 //next_state = ST_CHECK_POWERDRAW;
                 break;
                 
@@ -152,10 +153,9 @@ int main()
                     PORTC = bufferC;
                     mill_seconds = 0;
                 }
-                
-                
-                
-               next_state = ST_PINGPONG; // go in a loop
+                 
+               //next_state = ST_FUNCT_TEST; // go in a loop
+               next_state = ST_PINGPONG;
                break;
         }
         
@@ -168,7 +168,9 @@ int main()
 
 void setup()
 {
-    OSCCON = 0b00110100; // set the system clock to 4 Mhz
+    // page 74 of data sheet
+    //OSCCON = 0b00110100; // set the system clock to 4 Mhz
+    OSCCON = 0b00111100; // set the system block to 16 Mhz
     /* Select pins 4&5 as the uart - page 102 */
     TRISCbits.TRISC0 = 0; // RC0 as an output
     //TRISCbits.TRISC4 = 0;   /* RC4 as output TX pin 6 */
@@ -177,8 +179,10 @@ void setup()
     
     // configure IO for analog to digital converter
     TRISCbits.TRISC3 = 1; // RC3 is an input
+    
     // configure timer0 prescaler and interupts
-    OPTION_REG = 0b10000001; // option reg, datasheet page 178
+    //OPTION_REG = 0b10000001; // option reg, 1:4 presclaler ,datasheet page 178
+    OPTION_REG = 0b10000011; // 1:16 prescaler
     // configure global interupt bois
     T0IE = 1; // tmr0 interupt
     GIE = 1; // global interupt
@@ -212,6 +216,14 @@ void pingpong()
             {
                 putln("preparing to self destruct....\n");
                 putln("have a nice day :) \n");
+            }
+            else if(strcmp(strIn,"who's the man?") == 0)
+            {
+                putln("Dillon's the man!\n");
+            }
+            else
+            {
+                putln("unkown command, but thanks for playing\n");
             }
         }
         flush(); // flush the serial ports

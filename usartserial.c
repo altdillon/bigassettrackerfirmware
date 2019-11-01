@@ -7,18 +7,18 @@
 void usart_setup()
 {
     /* Enabling transmitter 23.1.1.1 page 259 - TX/CK I/O pin */
-    TXSTAbits.TXEN = 1;
-    TXSTAbits.SYNC = 0;
-    RCSTAbits.SPEN = 1;
+    TXSTAbits.TXEN = 1; // transmit enable
+    TXSTAbits.SYNC = 0; // syc mode/ asycnh mode
+    RCSTAbits.SPEN = 1; // receive enable
     /* Enabling receiver 23.1.2.1 page 262 - RX/DT I/O pin */
-    RCSTAbits.CREN = 1;
+    RCSTAbits.CREN = 1; 
 
     /* Select pins 4&5 as the uart - page 102 */
     TRISCbits.TRISC4 = 0;   /* RC4 as output  */
     TRISCbits.TRISC5 = 1;   /* RC5 as input */
 
     ///* assume 4MHz clock, 19k2 baud */
-    TXSTAbits.BRGH = 0;
+    TXSTAbits.BRGH = 1; // BRG H made 1
     BAUDCONbits.BRG16 = 1;
     //SPBRGL = 12; // defult baud
 
@@ -52,14 +52,16 @@ char set_baud(unsigned long desired_baud)
         
         // maybe swap this out for a loop up table
         // compute the new baud rate
+        float divValue = 4; // value found in datasheet for setting new baud rate
         double set_baud = (double)desired_baud;
         // see page 261 of the datasheet
         //unsigned long Fosc = 4000000; // 6 zeros, I counted...
         unsigned long Fosc = 16000000;
         double x = Fosc/desired_baud;
-        x = x/16; // 16 bit baud gen
+        x = x/divValue; // 16 bit baud gen
         x = x -1;
-        SPBRGL = floor(x);
+        //SPBRGL = floor(x);
+        SPBRG = floor(x); // NOTE: this is a 16bit copy
         // compute the err between the set and desired baud rate
         float calculated_baud_rate = set_baud/(16*(x+1));
         float baud_err = (calculated_baud_rate - desired_baud)/desired_baud;

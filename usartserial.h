@@ -50,7 +50,7 @@ char getln(char *buffer,char length); // read a number of characters into buffer
 char putln(char *str); // send a full string
 void putln_size(char *str,unsigned char length); // send a string with a fixed length (not tested as of 8/24)
 bool is_Avaible(); // true if there's data in the buffer to read
-void set_baud(unsigned long desired_baud); // set the baud rate to an arbitary baud rate
+char set_baud(unsigned long desired_baud); // set the baud rate to an arbitary baud rate
 bool is_whitespace(char c); // true if character c is white space
 
 #ifdef	__cplusplus
