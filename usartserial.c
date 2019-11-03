@@ -131,13 +131,27 @@ char getln(char *buffer,char length)
 {
     char chbuffer = 0;
     unsigned char index;
+    short time_out = 500; // time out value in ms
+    short time_cout_counter = 0;
+    short start_time = mill_seconds; // save the current time in ms
+    
     for(index=0;index<length;index++)
     {
-        while(PIR1bits.RCIF == 0); // wait for character to become avalible
+        while(PIR1bits.RCIF == 0 && (start_time+time_out > mill_seconds)); // wait for character to become avalible, or the timeout runs out
+        
+        // figure out if the connection did indeed time out, if so then return -1 and flush the string
+        if(mill_seconds > start_time+time_out)
+        {
+            index = 0; // zero bytes read
+            flush();
+            break;
+        }
+        
         // then copy the byte over and make see if its one of end line bits
         chbuffer = RCREG; 
         if(chbuffer == CARRAGERETURN || chbuffer == NEWLINE || chbuffer == '\0') // check to see if the message has been terminated 
         {
+            buffer[index] = '\0';
             break; 
         }
         else
@@ -145,6 +159,8 @@ char getln(char *buffer,char length)
             buffer[index] = chbuffer;
         }
     }
+
+
     
     return index; // return the number of bytes read from the serial buffer
 }

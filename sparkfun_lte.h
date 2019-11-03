@@ -18,6 +18,7 @@
 #include <stdbool.h>
 #include <stdint.h> // some of the structs need this.  Don't remove
 #include "usartserial.h"
+#include "app.h"
 
 #define LTE_SHIELD_POWER_PIN 5
 #define LTE_SHIELD_RESET_PIN 6
@@ -90,12 +91,9 @@ const unsigned int LTE_SHIELD_SUPPORTED_BAUD[NUM_SUPPORTED_BAUD] =
     230400
 };
 
-// define the millisecond count variable in the LTE lib since it'll be used in here
-// this variable is incrimented in the isr function in main.c
-// right now I guess this makes since 
-unsigned int mill_seconds;
 
-void bDelay_ms(unsigned int delayms);
+
+//void bDelay_ms(unsigned int delayms); // moved...
 
 struct DateData {
     uint8_t day;

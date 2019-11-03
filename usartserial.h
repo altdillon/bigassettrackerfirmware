@@ -40,6 +40,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h> // needed for the floor function in baud gen
+#include "app.h"
 
 // prototypes for functions
 void usart_setup(); // setup the registers to correct values 
