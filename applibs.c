@@ -14,6 +14,7 @@ unsigned short pearson_hash(char *str,unsigned char len)
 }
 
 // functions for seting up and reading the Analog to digital converter
+// A/D is configured for physical pin 7!
 void AD_setup()
 {
     // ADCON bits 
