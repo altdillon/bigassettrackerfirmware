@@ -49,6 +49,8 @@
 #include "usartserial.h"
 #include "pic_i2c.h"
 #include "app.h" // headers for json, 
+// settings macros
+#define LTEBAUD 9600
 
 // global values
 bool running;
@@ -101,8 +103,16 @@ int main()
                 break;
                 
             case ST_LTE_START: // run the startup for the LTE board
-                powerOn(); // toggle the power on pin
-                next_state = ST_FUNCT_TEST;
+                if(testAT()) // test if the system is already started 
+                {
+                    next_state = ST_CHECK_ENVIROMENT; // if the system is turned on, advance to check envrioment
+                }
+                else
+                {
+                    //powerOn(); // do the power on toggle thing
+                    lte_start(LTEBAUD); // start the power on system
+                    next_state = ST_HOLOGRAM_CONNECT;
+                }
                 break;
                 
             case ST_PINGPONG: // test state for useart
@@ -113,6 +123,7 @@ int main()
                 
             case ST_HOLOGRAM_CONNECT:
                 
+                next_state = ST_CHECK_ENVIROMENT;
                 break;
                 
             case ST_HOLOGRAM_DISCONNECT:
@@ -121,6 +132,7 @@ int main()
                 
             case ST_CHECK_ENVIROMENT:
                 
+                next_state = ST_CHECK_POWERDRAW;
                 break;
                 
             case ST_SEND_FAILSTATE:
@@ -138,14 +150,18 @@ int main()
                 read_power();
                 
                 asm("nop");
-                next_state = ST_CHECK_POWERDRAW;
+                next_state = ST_SEND_UPDATE;
                 break;
                 
             case ST_SEND_UPDATE:
                 
+                next_state = ST_FUNCT_TEST;
                 break;
                 
             case ST_GET_FROM_HOLOGRAM:
+                
+                break;
+            case ST_SEND_SMS:
                 
                 break;
             case ST_FUNCT_TEST:
@@ -158,8 +174,8 @@ int main()
                     mill_seconds = 0;
                 }
                  
-               //next_state = ST_FUNCT_TEST; // go in a loop
-               next_state = ST_PINGPONG;
+               next_state = ST_FUNCT_TEST; // go in a loop
+               //next_state = ST_PINGPONG;
                break;
         }
         

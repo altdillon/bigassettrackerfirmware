@@ -85,7 +85,7 @@ char read_responce(char *data,unsigned int timeout)
     }
     else
     {
-        return -1;
+        return 0; // zero bytes where found, so zero where returned
     }
 }
 
@@ -103,29 +103,7 @@ LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * ex
 {
     // setup some instance variables
     LTE_Shield_error_t success;
-    unsigned int timeIn;
-    bool found = false;
-    unsigned char index = 0;
-    unsigned char dest_index = 0;
-    send_command(command,at); // send the command to the client device
-    // wait for a response
-    char read_bytes = read_responce(responseDest,LTE_SHIELD_STANDARD_RESPONSE_TIMEOUT);
-    if(read_bytes > 0) 
-    {
-        if(strcmp(expectedResponse,responseDest) == 0)
-        {
-            success = LTE_SHIELD_ERROR_SUCCESS;
-        }
-        else
-        {
-            success = LTE_SHIELD_ERROR_UNEXPECTED_RESPONSE;
-        }
-    }
-    else
-    {
-        success = LTE_SHIELD_ERROR_NO_RESPONSE; // if no bytes found, then no responce
-    }
-    
+    success = LTE_SHIELD_ERROR_NO_RESPONSE;
     return success;
 }
 
@@ -146,6 +124,61 @@ char sendATcmd(char *cmd, char *buffres, bool AT, unsigned int timeout)
     }
     
     return read_responce(buffres,timeout);
+}
+
+char autobaud(unsigned long baud)
+{
+    return -1; // stub
+}
+
+// send an AT command to set the baud rate
+char set_lte_baud(unsigned long baud)
+{
+    // LTE_SHIELD_COMMAND_BAUD
+    // make sure that the desired baud is supported
+    char err = 0; // error code
+    bool baud_supported = false;
+    char i;
+    for(i=0;i<NUM_SUPPORTED_BAUD;i++)
+    {
+        if(baud == LTE_SHIELD_SUPPORTED_BAUD[i])
+        {
+            baud_supported = true;
+            break;
+        }
+    }
+    
+    // if the baud rate is one of the supported baud rates, then send an updated baud rate
+    if(baud_supported)
+    {
+        char cmdBuffer[20],backBuffer[20]; // buffers for outgoing and incoming data
+        sprintf(cmdBuffer,"%s=%lu",LTE_SHIELD_COMMAND_BAUD,baud); // build up the command for the send buffer
+        char sent_bytes = sendATcmd(cmdBuffer,backBuffer,true,500);
+    }
+    
+    return err; // stub
+}
+
+bool testAT()
+{
+    bool worked = false;
+    
+    putln("AT\r"); // send an AT command with a termination character
+    char buffBack[20];
+    char len = read_responce(buffBack,500);
+    if(len > 0)
+    {
+        worked = true;
+    }
+    
+    return worked;
+}
+
+char lte_start(unsigned long desired_baud)
+{
+    char err = -1;
+    
+    return err;
 }
 
 // power on function
