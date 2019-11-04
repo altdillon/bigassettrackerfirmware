@@ -92,13 +92,17 @@ int main()
         {
             case ST_START: 
                 setup(); // setup the general IO
-                usart_setup(); // setup the usart
-                set_baud(230400); // test baud select
                 IREF_setup(); // setup the internal voltage refrence
                 AD_setup(); // setup the analog to digital converter
                 //next_state = ST_PINGPONG; 
-                next_state = ST_FUNCT_TEST; // goto the genral test state
+                //next_state = ST_FUNCT_TEST; // goto the genral test state
                 //next_state = ST_CHECK_POWERDRAW;
+                next_state = ST_LTE_START;
+                break;
+                
+            case ST_LTE_START: // run the startup for the LTE board
+                powerOn(); // toggle the power on pin
+                next_state = ST_FUNCT_TEST;
                 break;
                 
             case ST_PINGPONG: // test state for useart
@@ -196,12 +200,12 @@ void setup()
 
 void pingpong()
 {
-    char strIn[16];
-    memset(strIn,'\0',16); // make sure that strIn is clear
+    char strIn[32];
+    memset(strIn,'\0',32); // make sure that strIn is clear
     
     if(is_Avaible())
     {
-        char bytesin = getln(strIn,16);
+        char bytesin = getln(strIn,32);
         if(bytesin > 0)
         {
             if(strcmp(strIn,"ping") == 0)

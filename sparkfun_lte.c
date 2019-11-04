@@ -1,4 +1,5 @@
 #include "sparkfun_lte.h"
+#include "app.h"
 
 #define LTE_SHIELD_STANDARD_RESPONSE_TIMEOUT 1000
 #define LTE_SHIELD_SET_BAUD_TIMEOUT 500
@@ -53,7 +54,7 @@ const char ASCII_ESC = 0x1B;
 
 
 
-int read_responce(char *data,unsigned int timeout)
+char read_responce(char *data,unsigned int timeout)
 {
     unsigned char len;
     unsigned int time_in;
@@ -126,4 +127,34 @@ LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * ex
     }
     
     return success;
+}
+
+char sendATcmd(char *cmd, char *buffres, bool AT, unsigned int timeout)
+{
+    char err = 0;
+    
+    if(AT)
+    {
+        putln("AT");
+        putln(cmd);
+        putln("\r");
+    }
+    else
+    {
+        putln(cmd);
+        putln("\r");
+    }
+    
+    return read_responce(buffres,timeout);
+}
+
+// power on function
+// physical pin 8, pin RC2
+void powerOn()
+{
+    // set pin 8 low impedence(z) state
+    TRISCbits.TRISC2 = 0; // set pin 8 to an output
+    PORTCbits.RC2 = 0; // output low
+    sysDelay_ms(200); // delay for 200 ms
+    TRISCbits.TRISC2 = 1; // set back to a high Z state
 }

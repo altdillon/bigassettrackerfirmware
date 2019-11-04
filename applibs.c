@@ -64,3 +64,8 @@ float read_power()
     return P;
 }
 
+void sysDelay_ms(unsigned int delayms)
+{
+    unsigned int stop_time = mill_seconds + delayms; // find the stop time by adding the delay to the current time
+    while(stop_time > mill_seconds); // hold until current time is past delay time
+}

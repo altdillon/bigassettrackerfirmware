@@ -74,7 +74,7 @@ unsigned char lookup[255] = {
          float read_voltage(); // voltage
          float read_current(); // current
          float read_power(); // power = voltage * current
-         void bDelay_ms(unsigned int delayms); // delay for miliseconds
+         void sysDelay_ms(unsigned int delayms); // delay for milliseconds, note: this is only good for ~7 weeks
          
          // define the millisecond count variable in the LTE lib since it'll be used in here
          // this variable is incrimented in the isr function in main.c

@@ -53,6 +53,7 @@ void putln_size(char *str,unsigned char length); // send a string with a fixed l
 bool is_Avaible(); // true if there's data in the buffer to read
 char set_baud(unsigned long desired_baud); // set the baud rate to an arbitary baud rate
 bool is_whitespace(char c); // true if character c is white space
+bool isUsartConfigured(); // is the USART configured
 
 #ifdef	__cplusplus
 extern "C" {

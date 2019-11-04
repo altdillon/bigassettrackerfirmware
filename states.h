@@ -34,14 +34,15 @@
 // define macros for the states
 // ideally numbers should be less than 255
 #define ST_START 1 // start up the micro
-#define ST_HOLOGRAM_CONNECT 2 // connect to hologram
-#define ST_HOLOGRAM_DISCONNECT 3 // disconnect from hologram
-#define ST_CHECK_ENVIROMENT 4 // take envrimental readings
-#define ST_SEND_FAILSTATE 5 // tell hologram that we've failed
-#define ST_SLEEP_MODE 6 // put the micro to sleep
-#define ST_CHECK_POWERDRAW 7 // check the battery
-#define ST_SEND_UPDATE 8 // send normal update to hologram
-#define ST_GET_FROM_HOLOGRAM 9 // pull data down from hologram
+#define ST_LTE_START 2
+#define ST_HOLOGRAM_CONNECT 3 // connect to hologram
+#define ST_HOLOGRAM_DISCONNECT 4 // disconnect from hologram
+#define ST_CHECK_ENVIROMENT 5 // take envrimental readings
+#define ST_SEND_FAILSTATE 6 // tell hologram that we've failed
+#define ST_SLEEP_MODE 7 // put the micro to sleep
+#define ST_CHECK_POWERDRAW 8 // check the battery
+#define ST_SEND_UPDATE 9 // send normal update to hologram
+#define ST_GET_FROM_HOLOGRAM 10 // pull data down from hologram
 #define ST_PINGPONG 100 // run the ping pong program, for testing serial
 #define ST_FUNCT_TEST 101 // special testing state used to tesk functions while under devlopment
 

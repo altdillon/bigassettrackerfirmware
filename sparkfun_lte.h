@@ -17,8 +17,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdint.h> // some of the structs need this.  Don't remove
+#include <xc.h> // special functions for the pic16f
 #include "usartserial.h"
-#include "app.h"
+//#include "app.h"
 
 #define LTE_SHIELD_POWER_PIN 5
 #define LTE_SHIELD_RESET_PIN 6
@@ -161,6 +162,12 @@ LTE_Shield_error_t AT(); // send an AT test command
 LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * expectedResponse, char * responseDest, unsigned int commandTimeout, bool at);
 LTE_Shield_error_t set_lte_baud(unsigned int baud); // set the desired baud rate on the lte board
 void send_command(char *cmd,bool at); // send a command, maybe with an AT
-int read_responce(char *data,unsigned int timeout); // read a responce and return the number of bytes returned
+char read_responce(char *data,unsigned int timeout); // read a responce and return the number of bytes returned
+// functions for starting up the LTE board
+void powerOn(); // run the power function, power on button is RC2, which is physical pin 8
+char sendATcmd(char *cmd, char *buffres, bool AT, unsigned int timeout); // option to send an AT command to the LTE board
+char lte_start(unsigned long desired_baud); // not implmented yet
+char autobaud(unsigned long baud);
+
 
 #endif	/* SPARKFUN_LTE_H */
