@@ -44,6 +44,7 @@
 #define ST_SEND_UPDATE 9 // send normal update to hologram
 #define ST_GET_FROM_HOLOGRAM 10 // pull data down from hologram
 #define ST_SEND_SMS 11 // send an SMS to a list of phone numbers
+#define ST_FIRMWARE_CRASH 12 // special state if the firmware has crashed, blink out a spcial error
 #define ST_PINGPONG 100 // run the ping pong program, for testing serial
 #define ST_FUNCT_TEST 101 // special testing state used to tesk functions while under devlopment
 

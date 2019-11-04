@@ -126,9 +126,44 @@ char sendATcmd(char *cmd, char *buffres, bool AT, unsigned int timeout)
     return read_responce(buffres,timeout);
 }
 
+// see auto baud in the LTE lib
+/*
+ * auto baud steps:
+ * 1. pick a test baud from a list of supported baud rates
+ * 2. set the local USART to that baud rate
+ * 3. set the remote baud rate of the lte devices from a buad rate set by an lete device
+ * 4. the local usart is then set to the local baud rate
+ */
+
 char autobaud(unsigned long baud)
 {
-    return -1; // stub
+    char err = -1; 
+    unsigned long test_baud = 0;
+    bool baud_found = false;
+    // interate through possible baud rates
+    char b;
+    for(b=0;b<NUM_SUPPORTED_BAUD;b++)
+    {
+        test_baud = LTE_SHIELD_SUPPORTED_BAUD[b]; // pull a test baud form the test baud array
+        set_baud(test_baud); // set the local USART to the test baud rate
+        set_lte_baud(baud); // set the LTE baud to the desired baud rate
+        sysDelay_ms(200); // now pause for 200 ms
+        set_baud(baud); // restart the local baud rate to the desired baud rate
+        if(testAT()) // ok, now see if it works
+        {
+            // omg! it worked!
+            baud_found = true;
+            break;
+        }
+    }
+    
+    if(baud_found)
+    {
+        set_baud(baud); // make sure that the local USART is running at the local baud
+        err = 0; 
+    }
+    
+    return err;
 }
 
 // send an AT command to set the baud rate
@@ -136,7 +171,7 @@ char set_lte_baud(unsigned long baud)
 {
     // LTE_SHIELD_COMMAND_BAUD
     // make sure that the desired baud is supported
-    char err = 0; // error code
+    char err = -1; // error code
     bool baud_supported = false;
     char i;
     for(i=0;i<NUM_SUPPORTED_BAUD;i++)
@@ -154,9 +189,13 @@ char set_lte_baud(unsigned long baud)
         char cmdBuffer[20],backBuffer[20]; // buffers for outgoing and incoming data
         sprintf(cmdBuffer,"%s=%lu",LTE_SHIELD_COMMAND_BAUD,baud); // build up the command for the send buffer
         char sent_bytes = sendATcmd(cmdBuffer,backBuffer,true,500);
+        if(sent_bytes > 0)
+        {
+            err = 0; // if Zero then setting the baud rate works
+        }
     }
     
-    return err; // stub
+    return err; 
 }
 
 bool testAT()
@@ -177,6 +216,10 @@ bool testAT()
 char lte_start(unsigned long desired_baud)
 {
     char err = -1;
+    unsigned char current_state = AUTOBAUD;
+    unsigned char next_state = 0;
+    
+    
     
     return err;
 }

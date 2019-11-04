@@ -51,6 +51,7 @@
 #include "app.h" // headers for json, 
 // settings macros
 #define LTEBAUD 9600
+#define LTE_MAX_ATTEMPS 6 // number of attempts that the LTE board will be given to start
 
 // global values
 bool running;
@@ -84,6 +85,7 @@ int main()
     current_state = ST_START;
     unsigned short adreading; // test value for ADC
     char bufferC = 0; // buffer for portC, used in some testing functions
+    unsigned char LTE_START_attempts = 0; // number of attempts that the LTE has taken to start
     
     while(running)
     {
@@ -110,8 +112,24 @@ int main()
                 else
                 {
                     //powerOn(); // do the power on toggle thing
-                    lte_start(LTEBAUD); // start the power on system
-                    next_state = ST_HOLOGRAM_CONNECT;
+                    if(lte_start(LTEBAUD) == 0) // start the power on system
+                    {
+                        next_state = ST_HOLOGRAM_CONNECT; // if the LTE devices was succesfully started then move on to the next state
+                    }
+                    else
+                    {
+                        if(LTE_START_attempts < LTE_MAX_ATTEMPS)
+                        {
+                            LTE_START_attempts++;
+                            next_state = ST_LTE_START;
+                        }
+                        else
+                        {
+                            // at this point just give up
+                            next_state = ST_FUNCT_TEST;
+                        }
+                    }
+                    
                 }
                 break;
                 
@@ -137,6 +155,16 @@ int main()
                 
             case ST_SEND_FAILSTATE:
                 
+                
+                break;
+            case ST_FIRMWARE_CRASH:
+                if(mill_seconds >= 666) // freq on RC0 will be 1/666 0.0015015 evil...
+                {
+                    bufferC ^= 0x01; // blink RC0
+                    PORTC = bufferC;
+                    mill_seconds = 0;
+                }
+                next_state = ST_FIRMWARE_CRASH; // just run in a loop
                 break;
                 
             case  ST_SLEEP_MODE:

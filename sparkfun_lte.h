@@ -25,6 +25,11 @@
 #define LTE_SHIELD_POWER_PIN 5
 #define LTE_SHIELD_RESET_PIN 6
 
+// states for the LTE start function
+#define RESET 1
+#define AUTOBAUD 2
+#define CONFIGURE 3
+
 // moble network operators from line 57
 // pretty sure these are used to set things
 #define MNO_INVALID -1
