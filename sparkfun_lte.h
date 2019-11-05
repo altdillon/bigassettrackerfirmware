@@ -86,6 +86,38 @@ typedef char lte_shield_message_format_t;
 #define LTE_SHIELD_MESSAGE_FORMAT_PDU 0
 #define LTE_SHIELD_MESSAGE_FORMAT_TEXT 1
 
+// LTE sheild type for GPIO 
+typedef unsigned char LTE_Shield_gpio_t;
+#define GPIO1 16
+#define GPIO2 23
+#define GPIO3 24
+#define GPIO4 25
+#define GPIO5 42
+#define GPIO6 19
+
+// LTE GPIO pin modes
+typedef char LTE_Shield_gpio_mode_t;
+#define GPIO_MODE_INVALID -1
+#define GPIO_OUTPUT 0
+#define GPIO_INPUT 1 
+#define NETWORK_STATUS 2
+#define GNSS_SUPPLY_ENABLE 3
+#define GNSS_DATA_READY 4
+#define GNSS_RTC_SHARING 5
+#define SIM_CARD_DETECTION 6
+#define HEADSET_DETECTION 7
+#define GSM_TX_BURST_INDICATION 8
+#define MODULE_OPERATING_STATUS_INDICATION 9
+#define MODULE_FUNCTIONALITY_STATUS_INDICATION 10
+#define I2S_DIGITAL_AUDIO_INTERFACE 11
+#define SPI_SERIAL_INTERFACE 12
+#define MASTER_CLOCK_GENRATION 13
+#define UART_INTERFACE 14
+#define WIFI_ENABLE 15
+#define RING_INDICATION 16
+#define LAST_GASP_ENABLE 17
+#define PAD_DISABLED 255
+
 // array of supported baud rates for the LTE system
 #define NUM_SUPPORTED_BAUD 6
 const unsigned long LTE_SHIELD_SUPPORTED_BAUD[NUM_SUPPORTED_BAUD] =
@@ -148,6 +180,11 @@ struct operator_stats {
     uint8_t act;
 };
 
+// constents for terminating connections
+// CTRL+Z and ESC ASCII codes for SMS message sends
+const char ASCII_CTRL_Z = 0x1A;
+const char ASCII_ESC = 0x1B;
+
 // headers for LTE functions 
 
 typedef struct
@@ -173,8 +210,10 @@ char read_responce(char *data,unsigned int timeout); // read a responce and retu
 void powerOn(); // run the power function, power on button is RC2, which is physical pin 8
 char sendATcmd(char *cmd, char *buffres, bool AT, unsigned int timeout); // option to send an AT command to the LTE board
 char set_lte_baud(unsigned long baud);
+char set_gpio_mode(LTE_Shield_gpio_t gpio, LTE_Shield_gpio_mode_t mode); // set the GPIO mode
 char lte_start(unsigned long desired_baud); // not implmented yet
 char autobaud(unsigned long baud); // not implmented yet
+char enable_echo(bool echon); // enable/disable the echo functionality.
 bool testAT(); // send an AT command to set the baud rate
 
 #endif	/* SPARKFUN_LTE_H */

@@ -105,6 +105,7 @@ int main()
                 break;
                 
             case ST_LTE_START: // run the startup for the LTE board
+                               // I think that the LTE board needs to do some calibration among other things
                 if(testAT()) // test if the system is already started 
                 {
                     next_state = ST_CHECK_ENVIROMENT; // if the system is turned on, advance to check envrioment
@@ -133,6 +134,11 @@ int main()
                 }
                 break;
                 
+            case ST_SEND_SMS: // send an SMS
+                // send a series to text messages to the contact list
+                asm("nop");
+                next_state = ST_FAST_BLINK;
+                break;
             case ST_PINGPONG: // test state for useart
                 pingpong(); // run the ping pong function
                 next_state = ST_FUNCT_TEST; 
@@ -154,8 +160,8 @@ int main()
                 break;
                 
             case ST_SEND_FAILSTATE:
-                
-                
+                asm("nop");
+                next_state = ST_SEND_FAILSTATE; // just loop...
                 break;
             case ST_FIRMWARE_CRASH:
                 if(mill_seconds >= 666) // freq on RC0 will be 1/666 0.0015015 evil...
@@ -178,7 +184,7 @@ int main()
                 read_power();
                 
                 asm("nop");
-                next_state = ST_SEND_UPDATE;
+                next_state = ST_SEND_SMS;
                 break;
                 
             case ST_SEND_UPDATE:
@@ -187,9 +193,6 @@ int main()
                 break;
                 
             case ST_GET_FROM_HOLOGRAM:
-                
-                break;
-            case ST_SEND_SMS:
                 
                 break;
             case ST_FUNCT_TEST:
@@ -205,6 +208,15 @@ int main()
                next_state = ST_FUNCT_TEST; // go in a loop
                //next_state = ST_PINGPONG;
                break;
+            case ST_FAST_BLINK: // pretty much the same as funct test, but blink twice as fast
+                asm("nop");
+                if(mill_seconds >= 250)
+                {
+                    bufferC ^= 0x01; // blink RC0
+                    PORTC = bufferC;
+                    mill_seconds = 0;
+                }
+                break;
         }
         
         asm("clrwdt"); // clear the watch dog timer

@@ -47,6 +47,7 @@
 #define ST_FIRMWARE_CRASH 12 // special state if the firmware has crashed, blink out a spcial error
 #define ST_PINGPONG 100 // run the ping pong program, for testing serial
 #define ST_FUNCT_TEST 101 // special testing state used to tesk functions while under devlopment
+#define ST_FAST_BLINK 102 // special state for blinking an LED really fast to let the devloper know that works is done
 
 // define state type 
 typedef unsigned char STATE_T;

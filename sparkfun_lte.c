@@ -48,11 +48,16 @@ const char LTE_SHIELD_GPS_GPRMC[] = "+UGRMC";
 
 const char LTE_SHIELD_RESPONSE_OK[] = "OK\r\n";
 
-// CTRL+Z and ESC ASCII codes for SMS message sends
-const char ASCII_CTRL_Z = 0x1A;
-const char ASCII_ESC = 0x1B;
-
-
+// super important function for actually starting the LTE system
+char lte_start(unsigned long desired_baud)
+{
+    char err = -1;
+    unsigned char current_state = AUTOBAUD;
+    unsigned char next_state = 0;
+        
+    return err;
+    //return 0; // stub to make sure that the rest of the system works
+}
 
 char read_responce(char *data,unsigned int timeout)
 {
@@ -213,12 +218,29 @@ bool testAT()
     return worked;
 }
 
-char lte_start(unsigned long desired_baud)
+// enable echo command
+char enable_echo(bool echon)
 {
-    char err = -1;
-    unsigned char current_state = AUTOBAUD;
-    unsigned char next_state = 0;
+    char err = 0;
+    // commands for turning echo on and off
+    const char *echoOn = "ATE1";
+    const char *echoOff = "ATE0";
+    char backSendBuffer[20],cmdBuffer[9];
     
+    if(echon)
+    {
+        strcpy(cmdBuffer,echoOn);
+    }
+    else
+    {
+        strcpy(cmdBuffer,echoOff);
+    }
+    
+    unsigned char bytes_back = sendATcmd(cmdBuffer,backSendBuffer,false,500);
+    if(bytes_back == 0)
+    {
+        err = -1; // if no bytes are sent back then -1 as an error code
+    }
     
     
     return err;
@@ -231,6 +253,24 @@ void powerOn()
     // set pin 8 low impedence(z) state
     TRISCbits.TRISC2 = 0; // set pin 8 to an output
     PORTCbits.RC2 = 0; // output low
-    sysDelay_ms(200); // delay for 200 ms
+    sysDelay_ms(LTE_SHIELD_POWER_PULSE_PERIOD); // delay for 3200 ms
     TRISCbits.TRISC2 = 1; // set back to a high Z state
+}
+
+
+char set_gpio_mode(LTE_Shield_gpio_t gpio, LTE_Shield_gpio_mode_t mode)
+{
+    char err = -1;
+    // buffers for commands and return output
+    char cmdBuffer[20];
+    char backBuffer[20];
+    // LTE_SHIELD_COMMAND_GPIO --> +UGPIOC
+    sprintf(cmdBuffer, "%s=%d,%d",LTE_SHIELD_COMMAND_GPIO, gpio, mode); // build up the command in Sprintf
+    if(sendATcmd(cmdBuffer, backBuffer, true, LTE_SHIELD_SET_BAUD_TIMEOUT) > 0) // send the command and check for success
+    {
+        // if more then 0 bytes returned condtion is working
+        err = 0;
+    }
+    
+    return err;
 }
