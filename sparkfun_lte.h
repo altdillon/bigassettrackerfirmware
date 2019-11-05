@@ -18,7 +18,7 @@
 #include <stdbool.h>
 #include <stdint.h> // some of the structs need this.  Don't remove
 #include <xc.h> // special functions for the pic16f
-#include <stdio.h> // for sprintf
+//#include <stdio.h> // for sprintf
 #include "usartserial.h"
 //#include "app.h"
 
@@ -26,9 +26,9 @@
 #define LTE_SHIELD_RESET_PIN 6
 
 // states for the LTE start function
-#define RESET 1
-#define AUTOBAUD 2
-#define CONFIGURE 3
+#define LTE_RESET 1
+#define LTE_AUTOBAUD 2
+#define LTE_CONFIGURE 3
 
 // moble network operators from line 57
 // pretty sure these are used to set things
@@ -75,6 +75,7 @@ typedef char LTE_Shield_registration_status_t;
 #define LTE_SHIELD_IP_CONNECT_TIMEOUT 60000
 #define LTE_SHIELD_POLL_DELAY 1
 #define LTE_SHIELD_SOCKET_WRITE_TIMEOUT 10000
+#define LTE_SHIELD_INIT_TIMEOUT 60000
 
 // macros for selecting the TCP/UDP network protocol
 typedef char lte_shield_socket_protocol_t;
@@ -201,8 +202,8 @@ bool begin(unsigned short baud_rate);
 // functions defined in line 160 of the gitrepo
 // loop polling and polling setup
 bool poll();
-LTE_Shield_error_t AT(); // send an AT test command 
-LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * expectedResponse, char * responseDest, unsigned int commandTimeout, bool at);
+//LTE_Shield_error_t AT(); // send an AT test command 
+//LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * expectedResponse, char * responseDest, unsigned int commandTimeout, bool at);
 //LTE_Shield_error_t set_lte_baud(unsigned int baud); // set the desired baud rate on the lte board
 void send_command(char *cmd,bool at); // send a command, maybe with an AT
 char read_responce(char *data,unsigned int timeout); // read a responce and return the number of bytes returned

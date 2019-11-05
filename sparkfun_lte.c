@@ -52,9 +52,35 @@ const char LTE_SHIELD_RESPONSE_OK[] = "OK\r\n";
 char lte_start(unsigned long desired_baud)
 {
     char err = -1;
-    unsigned char current_state = AUTOBAUD;
+    // inital values for the state mashine
+    unsigned char current_state = LTE_AUTOBAUD;
     unsigned char next_state = 0;
+    // inital value for the timeout system
+    //unsigned int lte_timeout = 60000; // 60k ms = 1 minuite, which is the max amount of time I'm willing to wait for this thing to start
+    unsigned int start_time = mill_seconds; // save the start time
+    while((start_time + LTE_SHIELD_INIT_TIMEOUT) > mill_seconds) // while we havent timed out...
+    {
+        // run the state mashine...
+        if(current_state == LTE_RESET)
+        {
+            
+        }
+        else if(current_state == LTE_AUTOBAUD)
+        {
+            if(autobaud(desired_baud) != 0) // run the autobaud function and determine if it worked
+            {
+                
+            }
+        }
+        else if(current_state == LTE_CONFIGURE)
+        {
+            
+        }
         
+        current_state = next_state;
+    }
+
+    
     return err;
     //return 0; // stub to make sure that the rest of the system works
 }
@@ -94,15 +120,15 @@ char read_responce(char *data,unsigned int timeout)
     }
 }
 
-void send_command(char *cmd,bool at)
-{
-    if(at)
-    {
-        putln("AT");
-    }
-    putln(cmd);
-    putch('\r');
-}
+//void send_command(char *cmd,bool at)
+//{
+//    if(at)
+//    {
+//        putln("AT");
+//    }
+//    putln(cmd);
+//    putch('\r');
+//}
 
 LTE_Shield_error_t sendCommandWithResponse(const char * command, const char * expectedResponse, char * responseDest, unsigned int commandTimeout, bool at)
 {
@@ -192,7 +218,7 @@ char set_lte_baud(unsigned long baud)
     if(baud_supported)
     {
         char cmdBuffer[20],backBuffer[20]; // buffers for outgoing and incoming data
-        sprintf(cmdBuffer,"%s=%lu",LTE_SHIELD_COMMAND_BAUD,baud); // build up the command for the send buffer
+        //sprintf(cmdBuffer,"%s=%lu",LTE_SHIELD_COMMAND_BAUD,baud); // build up the command for the send buffer
         char sent_bytes = sendATcmd(cmdBuffer,backBuffer,true,500);
         if(sent_bytes > 0)
         {
@@ -223,17 +249,17 @@ char enable_echo(bool echon)
 {
     char err = 0;
     // commands for turning echo on and off
-    const char *echoOn = "ATE1";
-    const char *echoOff = "ATE0";
+    //const char *echoOn = "ATE1";
+    //onst char *echoOff = "ATE0";
     char backSendBuffer[20],cmdBuffer[9];
     
     if(echon)
     {
-        strcpy(cmdBuffer,echoOn);
+        strcpy(cmdBuffer,"ATE1");
     }
     else
     {
-        strcpy(cmdBuffer,echoOff);
+        strcpy(cmdBuffer,"ATE0");
     }
     
     unsigned char bytes_back = sendATcmd(cmdBuffer,backSendBuffer,false,500);
@@ -265,7 +291,7 @@ char set_gpio_mode(LTE_Shield_gpio_t gpio, LTE_Shield_gpio_mode_t mode)
     char cmdBuffer[20];
     char backBuffer[20];
     // LTE_SHIELD_COMMAND_GPIO --> +UGPIOC
-    sprintf(cmdBuffer, "%s=%d,%d",LTE_SHIELD_COMMAND_GPIO, gpio, mode); // build up the command in Sprintf
+    //sprintf(cmdBuffer, "%s=%d,%d",LTE_SHIELD_COMMAND_GPIO, gpio, mode); // build up the command in Sprintf
     if(sendATcmd(cmdBuffer, backBuffer, true, LTE_SHIELD_SET_BAUD_TIMEOUT) > 0) // send the command and check for success
     {
         // if more then 0 bytes returned condtion is working

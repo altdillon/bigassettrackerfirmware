@@ -58,12 +58,12 @@ bool running;
 STATE_T current_state;
 
 // global values for i2c devices 
-I2C_DEVICE_T test_device; // genral test device 
-I2C_DEVICE_T temp1,temp2,temp3; // idk, maybe we'll need 3 ?
+//I2C_DEVICE_T test_device; // genral test device 
+//I2C_DEVICE_T temp1,temp2,temp3; // idk, maybe we'll need 3 ?
 
 // prototypes for the setup functions
 void setup(); 
-void pingpong(); // simple game to test the serial 
+//void pingpong(); // simple game to test the serial 
 
 // interrupt service routine used for updateing the counter 
 #define TMR0_RESET (0xFF - 250 + 1)
@@ -140,7 +140,7 @@ int main()
                 next_state = ST_FAST_BLINK;
                 break;
             case ST_PINGPONG: // test state for useart
-                pingpong(); // run the ping pong function
+                //pingpong(); // run the ping pong function
                 next_state = ST_FUNCT_TEST; 
             
                 break;
@@ -254,38 +254,38 @@ void setup()
  *  you type pong it types ping
  */
 
-void pingpong()
-{
-    char strIn[32];
-    memset(strIn,'\0',32); // make sure that strIn is clear
-    
-    if(is_Avaible())
-    {
-        char bytesin = getln(strIn,32);
-        if(bytesin > 0)
-        {
-            if(strcmp(strIn,"ping") == 0)
-            {
-                putln("pong\n");
-            }
-            else if(strcmp(strIn,"pong") == 0)
-            {
-                putln("ping\n");
-            }
-            else if(strcmp(strIn,"self destruct") == 0)
-            {
-                putln("preparing to self destruct....\n");
-                putln("have a nice day :) \n");
-            }
-            else if(strcmp(strIn,"who's the man?") == 0)
-            {
-                putln("Dillon's the man!\n");
-            }
-            else
-            {
-                putln("unkown command, but thanks for playing\n");
-            }
-        }
-        flush(); // flush the serial ports
-    }
-}
+//void pingpong()
+//{
+//    char strIn[32];
+//    memset(strIn,'\0',32); // make sure that strIn is clear
+//    
+//    if(is_Avaible())
+//    {
+//        char bytesin = getln(strIn,32);
+//        if(bytesin > 0)
+//        {
+//            if(strcmp(strIn,"ping") == 0)
+//            {
+//                putln("pong\n");
+//            }
+//            else if(strcmp(strIn,"pong") == 0)
+//            {
+//                putln("ping\n");
+//            }
+//            else if(strcmp(strIn,"self destruct") == 0)
+//            {
+//                putln("preparing to self destruct....\n");
+//                putln("have a nice day :) \n");
+//            }
+//            else if(strcmp(strIn,"who's the man?") == 0)
+//            {
+//                putln("Dillon's the man!\n");
+//            }
+//            else
+//            {
+//                putln("unkown command, but thanks for playing\n");
+//            }
+//        }
+//        flush(); // flush the serial ports
+//    }
+//}

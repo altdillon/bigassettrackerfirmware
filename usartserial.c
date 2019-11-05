@@ -119,16 +119,16 @@ char getln(char *buffer,char length)
 {
     char chbuffer = 0;
     unsigned char index;
-    short time_out = 500; // time out value in ms
+    //short time_out = 500; // time out value in ms
     short time_cout_counter = 0;
     short start_time = mill_seconds; // save the current time in ms
     
     for(index=0;index<length;index++)
     {
-        while(PIR1bits.RCIF == 0 && (start_time+time_out > mill_seconds)); // wait for character to become avalible, or the timeout runs out
+        while(PIR1bits.RCIF == 0 && (start_time+TIMEOUT > mill_seconds)); // wait for character to become avalible, or the timeout runs out
         
         // figure out if the connection did indeed time out, if so then return -1 and flush the string
-        if(mill_seconds > start_time+time_out)
+        if(mill_seconds > start_time+TIMEOUT)
         {
             index = 0; // zero bytes read
             flush();

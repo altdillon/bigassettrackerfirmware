@@ -33,14 +33,17 @@
 #ifndef USART_SERIAL_HEADER
 #define	USART_SERIAL_HEADER
 // macros for new lines
-#define NEWLINE '\n'
-#define CARRAGERETURN '\r'
+
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include <string.h>
 #include <stdbool.h>
 #include <math.h> // needed for the floor function in baud gen
 #include "app.h"
+
+#define NEWLINE '\n'
+#define CARRAGERETURN '\r'
+#define TIMEOUT 500
 
 // prototypes for functions
 void usart_setup(); // setup the registers to correct values 
