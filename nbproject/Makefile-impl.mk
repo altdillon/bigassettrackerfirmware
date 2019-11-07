@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=bigassettrackerfirmware
+PROJECTNAME=bigasstrackerfirmwere
 
 # Active Configuration
 DEFAULTCONF=free

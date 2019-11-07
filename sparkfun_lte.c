@@ -219,6 +219,13 @@ char set_lte_baud(unsigned long baud)
     {
         char cmdBuffer[20],backBuffer[20]; // buffers for outgoing and incoming data
         //sprintf(cmdBuffer,"%s=%lu",LTE_SHIELD_COMMAND_BAUD,baud); // build up the command for the send buffer
+        // build up the command and send it
+        char baud_str[7];
+        long2str(baud,baud_str,6);
+        strcpy(cmdBuffer,LTE_SHIELD_COMMAND_BAUD);
+        strcat(cmdBuffer,"=");
+        strcat(cmdBuffer,baud_str);
+        asm("nop");
         char sent_bytes = sendATcmd(cmdBuffer,backBuffer,true,500);
         if(sent_bytes > 0)
         {
@@ -292,6 +299,21 @@ char set_gpio_mode(LTE_Shield_gpio_t gpio, LTE_Shield_gpio_mode_t mode)
     char backBuffer[20];
     // LTE_SHIELD_COMMAND_GPIO --> +UGPIOC
     //sprintf(cmdBuffer, "%s=%d,%d",LTE_SHIELD_COMMAND_GPIO, gpio, mode); // build up the command in Sprintf
+    // convert some constants to ints
+    char str_gpio[3];
+    char str_gpio_mode[4];
+    int2str(gpio,str_gpio,3);
+    int2str(mode,str_gpio_mode,4);
+    
+    // build up the command in strcat
+    strcpy(cmdBuffer,LTE_SHIELD_COMMAND_GPIO);
+    strcat(cmdBuffer,"=");
+    strcat(cmdBuffer,str_gpio);
+    strcat(cmdBuffer,",");
+    strcat(cmdBuffer,str_gpio_mode);
+    asm("asm");
+    
+    
     if(sendATcmd(cmdBuffer, backBuffer, true, LTE_SHIELD_SET_BAUD_TIMEOUT) > 0) // send the command and check for success
     {
         // if more then 0 bytes returned condtion is working

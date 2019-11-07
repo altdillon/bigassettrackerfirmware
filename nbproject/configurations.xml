@@ -37,10 +37,10 @@
         <targetDevice>PIC16F1455</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>ICD3PlatformTool</platformTool>
+        <platformTool>pk4hybrid</platformTool>
         <languageToolchain>XC8</languageToolchain>
         <languageToolchainVersion>2.05</languageToolchainVersion>
-        <platform>2</platform>
+        <platform>4</platform>
       </toolsSet>
       <packs>
         <pack name="PIC12-16F1xxx_DFP" vendor="Microchip" version="1.0.28"/>
@@ -703,7 +703,7 @@
         <platformTool>Simulator</platformTool>
         <languageToolchain>XC8</languageToolchain>
         <languageToolchainVersion>2.05</languageToolchainVersion>
-        <platform>2</platform>
+        <platform>4</platform>
       </toolsSet>
       <packs>
         <pack name="PIC12-16F1xxx_DFP" vendor="Microchip" version="1.0.28"/>
@@ -1079,8 +1079,6 @@
                   value="report"/>
         <property key="warningmessagebreakoptions.W0243_ADC_INVALID_TAD" value="report"/>
         <property key="warningmessagebreakoptions.W0244_ADC_CONVERSION_ABORTED"
-                  value="report"/>
-        <property key="warningmessagebreakoptions.W0245_ADC_BUFREGEN_NOT_ALLOWED"
                   value="report"/>
         <property key="warningmessagebreakoptions.W0400_PWM_PWM_FASTER_THAN_FOSC"
                   value="report"/>
