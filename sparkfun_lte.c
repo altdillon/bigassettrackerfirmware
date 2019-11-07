@@ -145,14 +145,17 @@ char sendATcmd(char *cmd, char *buffres, bool AT, unsigned int timeout)
     if(AT)
     {
         putln("AT");
-        putln(cmd);
-        putln("\r");
+        //putln(cmd);
+        //putln("\r");
     }
-    else
-    {
-        putln(cmd);
-        putln("\r");
-    }
+//    else
+//    {
+//        putln(cmd);
+//        //putln("\r");
+//    }
+    
+    putln(cmd);
+    putln("\r");
     
     return read_responce(buffres,timeout);
 }
@@ -204,34 +207,34 @@ char set_lte_baud(unsigned long baud)
     // make sure that the desired baud is supported
     char err = -1; // error code
     bool baud_supported = false;
-    char i;
-    for(i=0;i<NUM_SUPPORTED_BAUD;i++)
-    {
-        if(baud == LTE_SHIELD_SUPPORTED_BAUD[i])
-        {
-            baud_supported = true;
-            break;
-        }
-    }
+//    char i;
+//    for(i=0;i<NUM_SUPPORTED_BAUD;i++)
+//    {
+//        if(baud == LTE_SHIELD_SUPPORTED_BAUD[i])
+//        {
+//            baud_supported = true;
+//            break;
+//        }
+//    }
     
     // if the baud rate is one of the supported baud rates, then send an updated baud rate
-    if(baud_supported)
-    {
-        char cmdBuffer[20],backBuffer[20]; // buffers for outgoing and incoming data
-        //sprintf(cmdBuffer,"%s=%lu",LTE_SHIELD_COMMAND_BAUD,baud); // build up the command for the send buffer
-        // build up the command and send it
-        char baud_str[7];
-        long2str(baud,baud_str,6);
-        strcpy(cmdBuffer,LTE_SHIELD_COMMAND_BAUD);
-        strcat(cmdBuffer,"=");
-        strcat(cmdBuffer,baud_str);
-        asm("nop");
-        char sent_bytes = sendATcmd(cmdBuffer,backBuffer,true,500);
-        if(sent_bytes > 0)
-        {
-            err = 0; // if Zero then setting the baud rate works
-        }
-    }
+    //if(baud_supported)
+    //{
+      char cmdBuffer[20],backBuffer[20]; // buffers for outgoing and incoming data
+      //sprintf(cmdBuffer,"%s=%lu",LTE_SHIELD_COMMAND_BAUD,baud); // build up the command for the send buffer
+      // build up the command and send it
+      char baud_str[7];
+      long2str(baud,baud_str,6);
+      strcpy(cmdBuffer,LTE_SHIELD_COMMAND_BAUD);
+      strcat(cmdBuffer,"=");
+      strcat(cmdBuffer,baud_str);
+      asm("nop");
+      char sent_bytes = sendATcmd(cmdBuffer,backBuffer,true,500);
+      if(sent_bytes > 0)
+      {
+        err = 0; // if Zero then setting the baud rate works
+      }
+    //}
     
     return err; 
 }
