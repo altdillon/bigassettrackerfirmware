@@ -78,7 +78,7 @@ unsigned char lookup[255] = {
          // functions for making numbers into strings 
          void long2str(unsigned long num,char *str,unsigned char len); // take a long and make it a string
          void int2str(unsigned int num,char *str,unsigned char len);
-         
+         char count_digits(unsigned long num); // count the number of digits 
          // define the millisecond count variable in the LTE lib since it'll be used in here
          // this variable is incrimented in the isr function in main.c
          // right now I guess this makes since 

@@ -51,7 +51,7 @@
 #include "app.h" // headers for json, 
 // settings macros
 #define LTEBAUD 9600
-#define LTE_MAX_ATTEMPS 6 // number of attempts that the LTE board will be given to start
+#define LTE_MAX_ATTEMPS 8 // number of attempts that the LTE board will be given to start
 
 // global values
 bool running;
@@ -63,7 +63,7 @@ STATE_T current_state;
 
 // prototypes for the setup functions
 void setup(); 
-//void pingpong(); // simple game to test the serial 
+void pingpong(); // simple game to test the serial 
 
 // interrupt service routine used for updateing the counter 
 #define TMR0_RESET (0xFF - 250 + 1)
@@ -86,141 +86,22 @@ int main()
     unsigned short adreading; // test value for ADC
     char bufferC = 0; // buffer for portC, used in some testing functions
     unsigned char LTE_START_attempts = 0; // number of attempts that the LTE has taken to start
-    
-    while(running)
-    {
-        STATE_T next_state;
-        
-        // using a switch case to implement a state mashine
-        switch(current_state)
-        {
-            case ST_START: 
-                setup(); // setup the general IO
-                IREF_setup(); // setup the internal voltage refrence
-                AD_setup(); // setup the analog to digital converter
-                //next_state = ST_PINGPONG; 
-                //next_state = ST_FUNCT_TEST; // goto the genral test state
-                //next_state = ST_CHECK_POWERDRAW;
-                next_state = ST_LTE_START;
-                break;
-                
-            case ST_LTE_START: // run the startup for the LTE board
-                               // I think that the LTE board needs to do some calibration among other things
-                if(testAT()) // test if the system is already started 
-                {
-                    next_state = ST_CHECK_ENVIROMENT; // if the system is turned on, advance to check envrioment
-                }
-                else
-                {
-                    //powerOn(); // do the power on toggle thing
-                    if(lte_start(LTEBAUD) == 0) // start the power on system
-                    {
-                        next_state = ST_HOLOGRAM_CONNECT; // if the LTE devices was succesfully started then move on to the next state
-                    }
-                    else
-                    {
-                        if(LTE_START_attempts < LTE_MAX_ATTEMPS)
-                        {
-                            LTE_START_attempts++;
-                            next_state = ST_LTE_START;
-                        }
-                        else
-                        {
-                            // at this point just give up
-                            next_state = ST_FUNCT_TEST;
-                        }
-                    }
-                    
-                }
-                break;
-                
-            case ST_SEND_SMS: // send an SMS
-                // send a series to text messages to the contact list
-                asm("nop");
-                next_state = ST_FAST_BLINK;
-                break;
-            case ST_PINGPONG: // test state for useart
-                //pingpong(); // run the ping pong function
-                next_state = ST_FUNCT_TEST; 
-            
-                break;
-                
-            case ST_HOLOGRAM_CONNECT:
-                
-                next_state = ST_CHECK_ENVIROMENT;
-                break;
-                
-            case ST_HOLOGRAM_DISCONNECT:
-                
-                break;
-                
-            case ST_CHECK_ENVIROMENT:
-                
-                next_state = ST_CHECK_POWERDRAW;
-                break;
-                
-            case ST_SEND_FAILSTATE:
-                asm("nop");
-                next_state = ST_SEND_FAILSTATE; // just loop...
-                break;
-            case ST_FIRMWARE_CRASH:
-                if(mill_seconds >= 666) // freq on RC0 will be 1/666 0.0015015 evil...
-                {
-                    bufferC ^= 0x01; // blink RC0
-                    PORTC = bufferC;
-                    mill_seconds = 0;
-                }
-                next_state = ST_FIRMWARE_CRASH; // just run in a loop
-                break;
-                
-            case  ST_SLEEP_MODE:
-                
-                break;
-                
-            case ST_CHECK_POWERDRAW:
-                // make test calls to the power sensing stuff
-                read_current();
-                read_voltage();
-                read_power();
-                
-                asm("nop");
-                next_state = ST_SEND_SMS;
-                break;
-                
-            case ST_SEND_UPDATE:
-                
-                next_state = ST_FUNCT_TEST;
-                break;
-                
-            case ST_GET_FROM_HOLOGRAM:
-                
-                break;
-            case ST_FUNCT_TEST:
+    setup();
+    //set_baud(9600);
 
-                // print out a 1hz wave using the millisecond counter
-                if(mill_seconds >= 500)
-                {
-                    bufferC ^= 0x01; // blink RC0
-                    PORTC = bufferC;
-                    mill_seconds = 0;
-                }
-                 
-               next_state = ST_FUNCT_TEST; // go in a loop
-               //next_state = ST_PINGPONG;
-               break;
-            case ST_FAST_BLINK: // pretty much the same as funct test, but blink twice as fast
-                asm("nop");
-                if(mill_seconds >= 250)
-                {
-                    bufferC ^= 0x01; // blink RC0
-                    PORTC = bufferC;
-                    mill_seconds = 0;
-                }
-                break;
+    while(true)
+    {
+        while(LTE_START_attempts < LTE_MAX_ATTEMPS) // loop while we're under the max number of attempts
+        {
+            if(lte_start(9600) == 0) // try to start the LTE board and see if it worked
+            {
+                
+            }
+            else
+            {
+                LTE_START_attempts++;
+            }
         }
-        
-        asm("clrwdt"); // clear the watch dog timer
-        current_state = next_state; // update to the next state
     }
     
     return 0;

@@ -60,6 +60,8 @@ char set_baud(unsigned long desired_baud)
         err = -1; // return -1 as an error code
     }
     
+    asm("nop");
+    
     return err;
 }
 

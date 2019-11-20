@@ -89,3 +89,17 @@ void int2str(unsigned int num,char *str,unsigned char len)
 {
     long2str((long)num,str,len); // ssshhhhh.  pls don't tell.  But no really, this saves space
 }
+
+// count the number of degitis in a number
+char count_digits(unsigned long num)
+{
+    char count = 0;
+    
+    while(num != 0)
+    {
+        num = num / 10;
+        count++;
+    }
+    
+    return count;
+}
