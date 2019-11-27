@@ -87,15 +87,35 @@ int main()
     char bufferC = 0; // buffer for portC, used in some testing functions
     unsigned char LTE_START_attempts = 0; // number of attempts that the LTE has taken to start
     setup();
-    //set_baud(9600);
 
+    powerOn();
+    //sysDelay_ms(60000);
+    set_baud(115200);
+    char buffer[32];
+    putln("AT\n\r");
+    bool revd = false;
+    while(!revd)
+    {
+        memset(buffer,32,'\0');
+        if(is_Avaible())
+        {
+            char bytesin = getln(buffer,32);
+            if(bytesin > 0)
+            {
+                asm("nop");
+            }
+        }
+    }
+    
+    asm("nop");
+    
     while(true)
     {
         while(LTE_START_attempts < LTE_MAX_ATTEMPS) // loop while we're under the max number of attempts
         {
             if(lte_start(9600) == 0) // try to start the LTE board and see if it worked
             {
-                
+                asm("nop");
             }
             else
             {
